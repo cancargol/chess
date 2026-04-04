@@ -1,0 +1,13 @@
+{
+  "name": "ajedrez-maestro-api",
+  "version": "1.0.0",
+  "description": "API Lambda para el Dashboard de Ajedrez Maestro",
+  "main": "index.js",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.500.0",
+    "@aws-sdk/lib-dynamodb": "^3.500.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

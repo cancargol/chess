@@ -1,0 +1,400 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "ajedrez maestro",
+      "intents": [
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": ["cancelar", "anular"]
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": ["ayuda", "ayúdame", "qué puedo hacer", "cómo se juega", "instrucciones"]
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": ["parar", "detener", "salir", "adiós", "hasta luego"]
+        },
+        {
+          "name": "AMAZON.FallbackIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.NavigateHomeIntent",
+          "samples": []
+        },
+        {
+          "name": "IdentifyUserIntent",
+          "slots": [
+            {
+              "name": "UserName",
+              "type": "AMAZON.FirstName",
+              "samples": [
+                "soy {UserName}",
+                "me llamo {UserName}",
+                "{UserName}",
+                "mi nombre es {UserName}"
+              ]
+            }
+          ],
+          "samples": [
+            "soy {UserName}",
+            "me llamo {UserName}",
+            "{UserName}",
+            "mi nombre es {UserName}",
+            "soy el jugador {UserName}",
+            "identifícame como {UserName}"
+          ]
+        },
+        {
+          "name": "ProvideEmailIntent",
+          "slots": [
+            {
+              "name": "EmailUser",
+              "type": "AMAZON.SearchQuery",
+              "samples": [
+                "{EmailUser} arroba {EmailDomain} punto {EmailExtension}"
+              ]
+            },
+            {
+              "name": "EmailDomain",
+              "type": "AMAZON.SearchQuery"
+            },
+            {
+              "name": "EmailExtension",
+              "type": "EMAIL_EXTENSION"
+            },
+            {
+              "name": "FullEmail",
+              "type": "AMAZON.SearchQuery",
+              "samples": [
+                "mi correo es {FullEmail}"
+              ]
+            }
+          ],
+          "samples": [
+            "{EmailUser} arroba {EmailDomain} punto {EmailExtension}",
+            "mi correo es {EmailUser} arroba {EmailDomain} punto {EmailExtension}",
+            "mi email es {EmailUser} arroba {EmailDomain} punto {EmailExtension}",
+            "correo {EmailUser} arroba {EmailDomain} punto {EmailExtension}",
+            "{EmailUser} at {EmailDomain} punto {EmailExtension}",
+            "mi correo es {FullEmail}",
+            "mi email es {FullEmail}"
+          ]
+        },
+        {
+          "name": "SetEloIntent",
+          "slots": [
+            {
+              "name": "EloLevel",
+              "type": "AMAZON.NUMBER",
+              "samples": [
+                "{EloLevel}",
+                "elo {EloLevel}",
+                "nivel {EloLevel}"
+              ]
+            }
+          ],
+          "samples": [
+            "ajusta el nivel a {EloLevel}",
+            "ajusta el nivel a elo {EloLevel}",
+            "pon el nivel a {EloLevel}",
+            "pon el elo a {EloLevel}",
+            "cambia el nivel a {EloLevel}",
+            "nivel {EloLevel}",
+            "elo {EloLevel}",
+            "quiero jugar a elo {EloLevel}",
+            "dificultad {EloLevel}",
+            "quiero nivel {EloLevel}",
+            "configura elo {EloLevel}",
+            "ponme el motor a {EloLevel}"
+          ]
+        },
+        {
+          "name": "MoveIntent",
+          "slots": [
+            {
+              "name": "Piece",
+              "type": "CHESS_PIECE",
+              "samples": [
+                "{Piece}"
+              ]
+            },
+            {
+              "name": "SourceColumn",
+              "type": "CHESS_COLUMN"
+            },
+            {
+              "name": "SourceRow",
+              "type": "CHESS_ROW"
+            },
+            {
+              "name": "TargetColumn",
+              "type": "CHESS_COLUMN"
+            },
+            {
+              "name": "TargetRow",
+              "type": "CHESS_ROW"
+            },
+            {
+              "name": "Action",
+              "type": "CHESS_ACTION"
+            },
+            {
+              "name": "Castling",
+              "type": "CHESS_CASTLING"
+            },
+            {
+              "name": "Promotion",
+              "type": "CHESS_PROMOTION"
+            }
+          ],
+          "samples": [
+            "{Piece} {TargetColumn} {TargetRow}",
+            "{Piece} a {TargetColumn} {TargetRow}",
+            "mueve {Piece} a {TargetColumn} {TargetRow}",
+            "{Piece} {Action} en {TargetColumn} {TargetRow}",
+            "{Piece} {Action} {TargetColumn} {TargetRow}",
+            "{TargetColumn} {TargetRow}",
+            "mueve {TargetColumn} {TargetRow}",
+            "de {SourceColumn} {SourceRow} a {TargetColumn} {TargetRow}",
+            "mueve de {SourceColumn} {SourceRow} a {TargetColumn} {TargetRow}",
+            "mover de {SourceColumn} {SourceRow} a {TargetColumn} {TargetRow}",
+            "{SourceColumn} {SourceRow} a {TargetColumn} {TargetRow}",
+            "{Castling}",
+            "haz {Castling}",
+            "{Piece} {TargetColumn} {TargetRow} {Promotion}",
+            "{Piece} {TargetColumn} {TargetRow} corona {Promotion}",
+            "de {SourceColumn} {SourceRow} a {TargetColumn} {TargetRow} corona {Promotion}",
+            "mueve {Piece} {SourceColumn} a {TargetColumn} {TargetRow}",
+            "{Piece} de {SourceColumn} a {TargetColumn} {TargetRow}",
+            "juega {Piece} {TargetColumn} {TargetRow}",
+            "juega {TargetColumn} {TargetRow}",
+            "jugar {Piece} a {TargetColumn} {TargetRow}",
+            "{Piece} {Action} {Piece} en {TargetColumn} {TargetRow}",
+            "captura en {TargetColumn} {TargetRow}",
+            "{Piece} captura en {TargetColumn} {TargetRow}",
+            "alfil captura en {TargetColumn} {TargetRow}",
+            "caballo captura en {TargetColumn} {TargetRow}",
+            "torre captura en {TargetColumn} {TargetRow}",
+            "dama captura en {TargetColumn} {TargetRow}",
+            "peón captura en {TargetColumn} {TargetRow}",
+            "peón {TargetColumn} {TargetRow}",
+            "peón a {TargetColumn} {TargetRow}",
+            "rey a {TargetColumn} {TargetRow}",
+            "torre a {TargetColumn} {TargetRow}",
+            "alfil a {TargetColumn} {TargetRow}",
+            "dama a {TargetColumn} {TargetRow}",
+            "caballo a {TargetColumn} {TargetRow}"
+          ]
+        },
+        {
+          "name": "NewGameIntent",
+          "slots": [],
+          "samples": [
+            "nueva partida",
+            "empezar partida",
+            "nueva partida de ajedrez",
+            "quiero jugar",
+            "empezar a jugar",
+            "empieza una partida",
+            "partida nueva",
+            "comenzar partida",
+            "jugar una partida"
+          ]
+        },
+        {
+          "name": "StatusIntent",
+          "slots": [],
+          "samples": [
+            "estado",
+            "cómo va la partida",
+            "cómo está el tablero",
+            "qué hay en el tablero",
+            "estado del tablero",
+            "estado de la partida",
+            "dime el estado",
+            "cómo voy",
+            "situación",
+            "repite las últimas jugadas",
+            "últimas jugadas"
+          ]
+        },
+        {
+          "name": "ResignIntent",
+          "slots": [],
+          "samples": [
+            "me rindo",
+            "abandono",
+            "abandonar",
+            "rendirme",
+            "abandonar partida",
+            "me doy por vencido",
+            "abandono la partida",
+            "me retiro"
+          ]
+        }
+      ],
+      "types": [
+        {
+          "name": "CHESS_PIECE",
+          "values": [
+            { "id": "king", "name": { "value": "rey", "synonyms": ["el rey"] } },
+            { "id": "queen", "name": { "value": "dama", "synonyms": ["reina", "la dama", "la reina"] } },
+            { "id": "rook", "name": { "value": "torre", "synonyms": ["la torre"] } },
+            { "id": "bishop", "name": { "value": "alfil", "synonyms": ["el alfil"] } },
+            { "id": "knight", "name": { "value": "caballo", "synonyms": ["el caballo"] } },
+            { "id": "pawn", "name": { "value": "peón", "synonyms": ["peon", "el peón", "el peon"] } }
+          ]
+        },
+        {
+          "name": "CHESS_COLUMN",
+          "values": [
+            { "id": "a", "name": { "value": "a", "synonyms": ["alfa", "columna a"] } },
+            { "id": "b", "name": { "value": "b", "synonyms": ["bravo", "columna b", "be"] } },
+            { "id": "c", "name": { "value": "c", "synonyms": ["charlie", "columna c", "ce"] } },
+            { "id": "d", "name": { "value": "d", "synonyms": ["delta", "columna d", "de"] } },
+            { "id": "e", "name": { "value": "e", "synonyms": ["echo", "columna e"] } },
+            { "id": "f", "name": { "value": "f", "synonyms": ["foxtrot", "columna f", "efe"] } },
+            { "id": "g", "name": { "value": "g", "synonyms": ["golf", "columna g", "ge"] } },
+            { "id": "h", "name": { "value": "h", "synonyms": ["hotel", "columna h", "hache"] } }
+          ]
+        },
+        {
+          "name": "CHESS_ROW",
+          "values": [
+            { "id": "1", "name": { "value": "1", "synonyms": ["uno", "primera", "fila 1"] } },
+            { "id": "2", "name": { "value": "2", "synonyms": ["dos", "segunda", "fila 2"] } },
+            { "id": "3", "name": { "value": "3", "synonyms": ["tres", "tercera", "fila 3"] } },
+            { "id": "4", "name": { "value": "4", "synonyms": ["cuatro", "cuarta", "fila 4"] } },
+            { "id": "5", "name": { "value": "5", "synonyms": ["cinco", "quinta", "fila 5"] } },
+            { "id": "6", "name": { "value": "6", "synonyms": ["seis", "sexta", "fila 6"] } },
+            { "id": "7", "name": { "value": "7", "synonyms": ["siete", "séptima", "fila 7"] } },
+            { "id": "8", "name": { "value": "8", "synonyms": ["ocho", "octava", "fila 8"] } }
+          ]
+        },
+        {
+          "name": "CHESS_ACTION",
+          "values": [
+            { "id": "capture", "name": { "value": "captura", "synonyms": ["captura en", "come", "toma", "x"] } },
+            { "id": "move", "name": { "value": "mueve", "synonyms": ["va a", "juega", "mover"] } }
+          ]
+        },
+        {
+          "name": "CHESS_CASTLING",
+          "values": [
+            { "id": "kingside", "name": { "value": "enroque corto", "synonyms": ["enroque de rey", "enroque kingside", "enroque por el lado del rey"] } },
+            { "id": "queenside", "name": { "value": "enroque largo", "synonyms": ["enroque de dama", "enroque queenside", "enroque por el lado de la dama"] } }
+          ]
+        },
+        {
+          "name": "CHESS_PROMOTION",
+          "values": [
+            { "id": "queen", "name": { "value": "dama", "synonyms": ["reina", "corona dama", "coronar dama"] } },
+            { "id": "rook", "name": { "value": "torre", "synonyms": ["corona torre", "coronar torre"] } },
+            { "id": "bishop", "name": { "value": "alfil", "synonyms": ["corona alfil", "coronar alfil"] } },
+            { "id": "knight", "name": { "value": "caballo", "synonyms": ["corona caballo", "coronar caballo"] } }
+          ]
+        },
+        {
+          "name": "EMAIL_EXTENSION",
+          "values": [
+            { "id": "com", "name": { "value": "com", "synonyms": ["punto com"] } },
+            { "id": "es", "name": { "value": "es", "synonyms": ["punto es"] } },
+            { "id": "org", "name": { "value": "org", "synonyms": ["punto org"] } },
+            { "id": "net", "name": { "value": "net", "synonyms": ["punto net"] } },
+            { "id": "gmail.com", "name": { "value": "gmail punto com", "synonyms": ["gmail.com", "gmail com"] } },
+            { "id": "hotmail.com", "name": { "value": "hotmail punto com", "synonyms": ["hotmail.com", "hotmail com"] } },
+            { "id": "yahoo.com", "name": { "value": "yahoo punto com", "synonyms": ["yahoo.com", "yahoo com"] } }
+          ]
+        }
+      ]
+    },
+    "dialog": {
+      "intents": [
+        {
+          "name": "MoveIntent",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [
+            {
+              "name": "TargetColumn",
+              "type": "CHESS_COLUMN",
+              "confirmationRequired": false,
+              "elicitationRequired": false,
+              "prompts": {}
+            },
+            {
+              "name": "TargetRow",
+              "type": "CHESS_ROW",
+              "confirmationRequired": false,
+              "elicitationRequired": false,
+              "prompts": {}
+            }
+          ]
+        },
+        {
+          "name": "IdentifyUserIntent",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [
+            {
+              "name": "UserName",
+              "type": "AMAZON.FirstName",
+              "confirmationRequired": false,
+              "elicitationRequired": true,
+              "prompts": {
+                "elicitation": "Elicit.Intent-IdentifyUserIntent.IntentSlot-UserName"
+              }
+            }
+          ]
+        },
+        {
+          "name": "SetEloIntent",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [
+            {
+              "name": "EloLevel",
+              "type": "AMAZON.NUMBER",
+              "confirmationRequired": false,
+              "elicitationRequired": true,
+              "prompts": {
+                "elicitation": "Elicit.Intent-SetEloIntent.IntentSlot-EloLevel"
+              }
+            }
+          ]
+        }
+      ],
+      "delegationStrategy": "SKILL_RESPONSE"
+    },
+    "prompts": [
+      {
+        "id": "Elicit.Intent-IdentifyUserIntent.IntentSlot-UserName",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "¿Cómo te llamas?"
+          },
+          {
+            "type": "PlainText",
+            "value": "Dime tu nombre."
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Intent-SetEloIntent.IntentSlot-EloLevel",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "¿A qué nivel de ELO quieres jugar? Di un número entre 100 y 3000."
+          },
+          {
+            "type": "PlainText",
+            "value": "¿Qué ELO quieres para el motor?"
+          }
+        ]
+      }
+    ]
+  }
+}
