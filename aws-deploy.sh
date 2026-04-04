@@ -120,7 +120,7 @@ API_ID=$(aws apigatewayv2 create-api \
     --name AjedrezMaestroHttpApi \
     --protocol-type HTTP \
     --target $API_LAMBDA_ARN \
-    --cors-configuration "AllowOrigins=['*'],AllowMethods=['GET','POST','OPTIONS'],AllowHeaders=['Content-Type','Authorization']" \
+    --cors-configuration "AllowOrigins=['*'],AllowMethods=['GET','POST','OPTIONS'],AllowHeaders=['Content-Type','Authorization','Accept','Origin','X-Requested-With'],MaxAge=3600" \
     --query 'ApiId' --output text 2>/dev/null)
 
 # Si ya existe, podemos buscar la id

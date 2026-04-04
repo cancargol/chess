@@ -25,69 +25,49 @@ const docClient = DynamoDBDocumentClient.from(client);
 const USERS_TABLE = process.env.USERS_TABLE || 'ajedrez_maestro_users';
 const GAMES_TABLE = process.env.GAMES_TABLE || 'ajedrez_maestro_games';
 
-// GitHub Pages origin for CORS
-const ALLOWED_ORIGINS = [
-  'https://cancargol.github.io',
-  'http://localhost:3000',
-  'http://localhost:5173',
-];
-
 exports.handler = async (event) => {
   console.log('Event:', JSON.stringify(event));
 
   const method = event.httpMethod || event.requestContext?.http?.method || 'GET';
   const path = event.path || event.rawPath || '/';
-  const origin = event.headers?.origin || event.headers?.Origin || '';
 
-  // CORS headers
-  const corsOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
-  const corsHeaders = {
-    'Access-Control-Allow-Origin': corsOrigin,
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    'Access-Control-Max-Age': '86400',
-    'Content-Type': 'application/json',
-  };
-
-  // Handle CORS preflight
-  if (method === 'OPTIONS') {
-    return { statusCode: 204, headers: corsHeaders, body: '' };
-  }
+  // Content-Type for all responses
+  const headers = { 'Content-Type': 'application/json' };
 
   try {
     // Route requests
     if (method === 'GET' && path === '/api/players') {
-      return await getPlayers(corsHeaders);
+      return await getPlayers(headers);
     }
 
     if (method === 'GET' && path.startsWith('/api/players/')) {
       const id = path.replace('/api/players/', '');
-      return await getPlayerById(id, corsHeaders);
+      return await getPlayerById(id, headers);
     }
 
     if (method === 'GET' && path.startsWith('/api/player-games/')) {
       const id = path.replace('/api/player-games/', '');
-      return await getPlayerGames(id, corsHeaders);
+      return await getPlayerGames(id, headers);
     }
 
     if (method === 'GET' && path === '/api/games') {
-      return await getGames(corsHeaders);
+      return await getGames(headers);
     }
 
     if (method === 'GET' && path.startsWith('/api/games/')) {
       const id = path.replace('/api/games/', '');
-      return await getGameById(id, corsHeaders);
+      return await getGameById(id, headers);
     }
 
     if (method === 'POST' && path === '/api/auth') {
       const body = JSON.parse(event.body || '{}');
-      return await verifyPin(body.pin, corsHeaders);
+      return await verifyPin(body.pin, headers);
     }
 
-    return response(404, { error: 'Not found' }, corsHeaders);
+    return response(404, { error: 'Not found' }, headers);
   } catch (error) {
     console.error('Error:', error);
-    return response(500, { error: 'Internal server error' }, corsHeaders);
+    return response(500, { error: 'Internal server error' }, headers);
   }
 };
 
