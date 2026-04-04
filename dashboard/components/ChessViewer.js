@@ -12,7 +12,7 @@ export default function ChessViewer({ pgn, playerName, engineElo, result }) {
   const { moves, positions } = useMemo(() => {
     const game = new Chess();
     const movesList = [];
-    const positionsList = [game.fen()]; // Starting position
+    const positionsList = ['rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1']; 
 
     if (pgn) {
       try {
@@ -20,22 +20,25 @@ export default function ChessViewer({ pgn, playerName, engineElo, result }) {
         const history = game.history({ verbose: true });
         const headers = game.header();
 
-        // If PGN has a FEN header, we start from that position
+        // Si el PGN tiene cabecera FEN (partida empezada a mitad), empezamos ahí
         const startPos = headers.FEN || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
         
-        // Re-replay moves on a separate instance to build the position list correctly
         const tempGame = new Chess();
-        tempGame.load(startPos);
+        const loaded = tempGame.load(startPos);
         
         positionsList[0] = tempGame.fen();
         
         for (const move of history) {
-          tempGame.move(move.san);
-          movesList.push(move);
-          positionsList.push(tempGame.fen());
+          const result = tempGame.move(move.san);
+          if (result) {
+            movesList.push(result);
+            positionsList.push(tempGame.fen());
+          } else {
+            console.warn('Jugada no válida en esta posición:', move.san);
+          }
         }
       } catch (e) {
-        console.error('Error parsing PGN:', e);
+        console.error('Error al procesar el PGN:', e);
       }
     }
 
@@ -119,6 +122,7 @@ export default function ChessViewer({ pgn, playerName, engineElo, result }) {
         <div className="board-container">
           <Chessboard
             id="pgn-viewer-board"
+            key={currentFen}
             position={currentFen}
             boardWidth={boardWidth}
             arePiecesDraggable={false}
@@ -149,6 +153,25 @@ export default function ChessViewer({ pgn, playerName, engineElo, result }) {
 
         <div style={{ textAlign: 'center', marginTop: '0.75rem', color: 'var(--text-muted)', fontSize: '0.8rem' }}>
           Jugada {currentMoveIndex + 1} de {moves.length} · ← → para navegar
+        </div>
+
+        {/* Debug panel (temporary) */}
+        <div style={{ 
+          marginTop: '2rem', 
+          padding: '1rem', 
+          background: 'rgba(0,0,0,0.3)', 
+          borderRadius: '8px', 
+          fontSize: '0.7rem', 
+          fontFamily: 'monospace',
+          color: '#aaa',
+          border: '1px dashed #444',
+          maxWidth: boardWidth
+        }}>
+          <div style={{ fontWeight: 'bold', color: '#fff', marginBottom: '0.5rem' }}>DEBUG INFO</div>
+          <div>Index: {currentMoveIndex}</div>
+          <div style={{ wordBreak: 'break-all' }}>FEN: {currentFen}</div>
+          <div style={{ wordBreak: 'break-all', marginTop: '0.5rem' }}>PGN (first 100): {pgn?.substring(0, 100)}...</div>
+          <div>Positions available: {positions.length}</div>
         </div>
       </div>
 
