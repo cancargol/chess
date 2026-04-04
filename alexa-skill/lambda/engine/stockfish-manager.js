@@ -17,8 +17,8 @@ async function initEngine() {
 
   return new Promise((resolve, reject) => {
     const timeout = setTimeout(() => {
-      reject(new Error('Stockfish initialization timeout (10s)'));
-    }, 10000);
+      reject(new Error('Stockfish initialization timeout (15s)'));
+    }, 15000);
 
     try {
       const Stockfish = require('stockfish');
@@ -36,18 +36,22 @@ async function initEngine() {
       if (typeof engine.onmessage === 'function' || engine.onmessage === null) {
         engine.onmessage = (event) => {
           const msg = typeof event === 'string' ? event : event?.data;
+          console.log('Stockfish message:', msg);
           messageHandler(msg);
         };
       } else if (typeof engine.addMessageListener === 'function') {
-        engine.addMessageListener(messageHandler);
-      } else if (typeof engine.on === 'function') {
-        engine.on('message', messageHandler);
+        engine.addMessageListener((msg) => {
+          console.log('Stockfish message:', msg);
+          messageHandler(msg);
+        });
       }
 
+      console.log('Stockfish initializing with uci command...');
       // Enviar comando UCI para inicializar
       sendCommand(engine, 'uci');
       stockfishEngine = engine;
     } catch (err) {
+      console.error('Failed to load Stockfish module:', err);
       clearTimeout(timeout);
       reject(new Error(`Failed to load Stockfish: ${err.message}`));
     }

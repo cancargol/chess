@@ -90,11 +90,9 @@ const MoveHandler = {
         .getResponse();
     }
 
-    // Obtener movimiento del motor
-    const engineElo = sessionAttributes.engineElo || DEFAULT_ELO;
-    const params = mapEloToStockfish(engineElo);
-
     let engineMoveUCI;
+    let engineDescription = '';
+
     try {
       engineMoveUCI = await getBestMove(
         chess.fen(),
@@ -106,19 +104,22 @@ const MoveHandler = {
       console.error('Stockfish error:', error);
       // Fallback: movimiento aleatorio
       const legalMoves = chess.moves();
-      const randomMove = legalMoves[Math.floor(Math.random() * legalMoves.length)];
-      const fallbackResult = chessService.makeEngineMove(chess, randomMove);
-      engineMoveUCI = fallbackResult.move?.san || randomMove;
-
-      speechOutput += 'He tenido un problema con el motor, así que jugaré un movimiento básico. ';
+      if (legalMoves.length > 0) {
+        const randomMove = legalMoves[Math.floor(Math.random() * legalMoves.length)];
+        const fallbackResult = chessService.makeEngineMove(chess, randomMove);
+        if (fallbackResult.success) {
+          engineDescription = fallbackResult.description;
+          speechOutput += 'He tenido un problema con el motor, así que jugaré un movimiento básico. ';
+        }
+      }
+      engineMoveUCI = null; // Mark as already handled or failed
     }
 
-    // Aplicar movimiento del motor
+    // Aplicar movimiento del motor (si no se hizo en el fallback)
     if (engineMoveUCI) {
       const engineResult = chessService.makeEngineMove(chess, engineMoveUCI);
-
       if (engineResult.success) {
-        speechOutput += `Mi jugada: ${engineResult.description}. `;
+        engineDescription = engineResult.description;
       } else {
         // Fallback si el motor dio un movimiento inválido
         const legalMoves = chess.moves();
@@ -126,10 +127,15 @@ const MoveHandler = {
           const fallbackMove = legalMoves[Math.floor(Math.random() * legalMoves.length)];
           const fallbackResult = chessService.makeEngineMove(chess, fallbackMove);
           if (fallbackResult.success) {
-            speechOutput += `Mi jugada: ${fallbackResult.description}. `;
+            engineDescription = fallbackResult.description;
+            speechOutput += 'El motor sugirió una jugada inválida, así que he hecho un movimiento básico. ';
           }
         }
       }
+    }
+
+    if (engineDescription) {
+      speechOutput += `Mi jugada: ${engineDescription}. `;
     }
 
     // Verificar estado después del movimiento del motor
