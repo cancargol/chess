@@ -31,7 +31,7 @@ const GAMES_TABLE = process.env.GAMES_TABLE || 'ajedrez_maestro_games';
 async function findUserByName(name) {
   const result = await docClient.send(new QueryCommand({
     TableName: USERS_TABLE,
-    IndexName: 'name-index',
+    IndexName: 'name_lower-index',
     KeyConditionExpression: 'name_lower = :name',
     ExpressionAttributeValues: {
       ':name': name.toLowerCase().trim(),
@@ -192,7 +192,7 @@ async function updateGame(gameId, updates) {
 async function getGamesByPlayer(playerId, limit = 20) {
   const result = await docClient.send(new QueryCommand({
     TableName: GAMES_TABLE,
-    IndexName: 'player-index',
+    IndexName: 'player_id-index',
     KeyConditionExpression: 'player_id = :pid',
     ExpressionAttributeValues: {
       ':pid': playerId,

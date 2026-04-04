@@ -126,7 +126,7 @@ async function getPlayerGames(playerId, headers) {
 
   const result = await docClient.send(new QueryCommand({
     TableName: GAMES_TABLE,
-    IndexName: 'player-index',
+    IndexName: 'player_id-index',
     KeyConditionExpression: 'player_id = :pid',
     ExpressionAttributeValues: { ':pid': playerId },
     ScanIndexForward: false,

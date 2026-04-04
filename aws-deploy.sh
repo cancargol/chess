@@ -20,7 +20,7 @@ aws dynamodb create-table \
     --table-name ajedrez_maestro_users \
     --attribute-definitions AttributeName=id,AttributeType=S AttributeName=name_lower,AttributeType=S \
     --key-schema AttributeName=id,KeyType=HASH \
-    --global-secondary-indexes '[{"IndexName": "name-index","KeySchema": [{"AttributeName": "name_lower","KeyType": "HASH"}],"Projection": {"ProjectionType": "ALL"}}]' \
+    --global-secondary-indexes '[{"IndexName": "name_lower-index","KeySchema": [{"AttributeName": "name_lower","KeyType": "HASH"}],"Projection": {"ProjectionType": "ALL"}}]' \
     --billing-mode PAY_PER_REQUEST >/dev/null 2>&1 || echo "Tabla users ya existe."
 
 aws dynamodb create-table \
@@ -28,7 +28,7 @@ aws dynamodb create-table \
     --table-name ajedrez_maestro_games \
     --attribute-definitions AttributeName=id,AttributeType=S AttributeName=player_id,AttributeType=S \
     --key-schema AttributeName=id,KeyType=HASH \
-    --global-secondary-indexes '[{"IndexName": "player-index","KeySchema": [{"AttributeName": "player_id","KeyType": "HASH"}],"Projection": {"ProjectionType": "ALL"}}]' \
+    --global-secondary-indexes '[{"IndexName": "player_id-index","KeySchema": [{"AttributeName": "player_id","KeyType": "HASH"}],"Projection": {"ProjectionType": "ALL"}}]' \
     --billing-mode PAY_PER_REQUEST >/dev/null 2>&1 || echo "Tabla games ya existe."
 
 # 3. Crear Role IAM para Lambda (permiso a CloudWatch y DynamoDB Full Access)
