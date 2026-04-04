@@ -51,14 +51,14 @@
           "slots": [
             {
               "name": "EmailUser",
-              "type": "AMAZON.SearchQuery",
+              "type": "AMAZON.FirstName",
               "samples": [
                 "{EmailUser} arroba {EmailDomain} punto {EmailExtension}"
               ]
             },
             {
               "name": "EmailDomain",
-              "type": "AMAZON.SearchQuery"
+              "type": "AMAZON.FirstName"
             },
             {
               "name": "EmailExtension",
