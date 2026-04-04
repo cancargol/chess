@@ -38,13 +38,19 @@ exports.handler = async (event) => {
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization, Accept, Origin, X-Requested-With',
     'Access-Control-Max-Age': '3600',
-    'Content-Type': 'application/json',
   };
 
-  // Handle CORS preflight explicitly
+  // Handle CORS preflight explicitly and EARLY
   if (method === 'OPTIONS') {
-    return { statusCode: 204, headers: corsHeaders, body: '' };
+    return {
+      statusCode: 204,
+      headers: corsHeaders,
+      body: ''
+    };
   }
+
+  // Pre-add Content-Type for normal responses
+  corsHeaders['Content-Type'] = 'application/json';
 
   try {
     // Route requests (flexible handle /api/ prefix or not, and extra slashes)
