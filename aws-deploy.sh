@@ -33,7 +33,7 @@ aws dynamodb create-table \
 
 # 3. Crear Role IAM para Lambda (permiso a CloudWatch y DynamoDB Full Access)
 echo "🔐 Configurando permisos IAM..."
-cat << 'EOF' > trust-policy.json
+cat << 'POLICY' > trust-policy.json
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -44,7 +44,7 @@ cat << 'EOF' > trust-policy.json
     }
   ]
 }
-EOF
+POLICY
 
 ROLE_ARN=$(aws iam create-role --role-name AjedrezMaestroRole --assume-role-policy-document file://trust-policy.json --query 'Role.Arn' --output text 2>/dev/null || aws iam get-role --role-name AjedrezMaestroRole --query 'Role.Arn' --output text)
 
@@ -57,7 +57,11 @@ sleep 10
 # 4. Crear Lambda Alexa Skill
 echo "📦 Compilando y subiendo Lambda de Alexa..."
 cd alexa-skill/lambda
-npm install >/dev/null 2>&1
+npm install --omit=dev >/dev/null 2>&1
+# REDUCIR TAMAÑO: quitamos aws-sdk que ya viene en la lambda runtime de AWS
+rm -rf node_modules/@aws-sdk
+# Evitar que incluya otro function.zip recursivamente y limpiarlo primero
+rm -f function.zip
 zip -qr function.zip .
 ALEXA_LAMBDA_ARN=$(aws lambda create-function \
     --region $REGION \
@@ -76,7 +80,7 @@ ALEXA_LAMBDA_ARN=$(aws lambda create-function \
     --zip-file fileb://function.zip \
     --query 'FunctionArn' --output text)
 
-# Dar permisos a Alexa para invocar la lambda (abre a todos los skill ids por simplicidad, o se ajusta post-creacion)
+# Dar permisos a Alexa para invocar la lambda
 aws lambda add-permission \
     --region $REGION \
     --function-name AjedrezMaestroSkill \
@@ -87,7 +91,10 @@ aws lambda add-permission \
 # 5. Crear Lambda API Gateway
 echo "📦 Compilando y subiendo Lambda del API (Dashboard)..."
 cd ../api-lambda
-npm install >/dev/null 2>&1
+npm install --omit=dev >/dev/null 2>&1
+# REDUCIR TAMAÑO
+rm -rf node_modules/@aws-sdk
+rm -f function.zip
 zip -qr function.zip .
 API_LAMBDA_ARN=$(aws lambda create-function \
     --region $REGION \
@@ -114,7 +121,12 @@ API_ID=$(aws apigatewayv2 create-api \
     --protocol-type HTTP \
     --target $API_LAMBDA_ARN \
     --cors-configuration "AllowOrigins=['*'],AllowMethods=['GET','POST','OPTIONS'],AllowHeaders=['Content-Type','Authorization']" \
-    --query 'ApiId' --output text)
+    --query 'ApiId' --output text 2>/dev/null)
+
+# Si ya existe, podemos buscar la id
+if [ -z "$API_ID" ]; then
+    API_ID=$(aws apigatewayv2 get-apis --query "Items[?Name=='AjedrezMaestroHttpApi'].ApiId | [0]" --output text)
+fi
 
 aws lambda add-permission \
     --region $REGION \
