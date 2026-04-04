@@ -121,8 +121,8 @@ export default function ChessViewer({ pgn, playerName, engineElo, result }) {
         {/* Board */}
         <div className="board-container">
           <Chessboard
-            id="pgn-viewer-board"
-            key={currentFen}
+            id={`board-${currentMoveIndex}-${currentFen.substring(0, 8)}`}
+            key={`${currentMoveIndex}-${currentFen}`}
             position={currentFen}
             boardWidth={boardWidth}
             arePiecesDraggable={false}

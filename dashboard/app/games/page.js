@@ -19,13 +19,22 @@ export default function GamesPage() {
 
     if (!auth) return;
 
-    async function fetchData() {
+    async function fetchData(isRefresh = false) {
+      if (isRefresh) setLoading(false); // Don't show full screen loader on manual refresh
       try {
         const [gamesData, playersData] = await Promise.all([
           getAllGames(),
           getAllPlayers(),
         ]);
-        setGames(gamesData);
+        
+        // Sort games: in_progress first, then by date
+        const sortedGames = [...gamesData].sort((a, b) => {
+          if (a.result === 'in_progress' && b.result !== 'in_progress') return -1;
+          if (a.result !== 'in_progress' && b.result === 'in_progress') return 1;
+          return new Date(b.finished_at || b.started_at || 0) - new Date(a.finished_at || a.started_at || 0);
+        });
+        
+        setGames(sortedGames);
 
         const userMap = {};
         playersData.forEach((u) => { userMap[u.id] = u; });
@@ -38,6 +47,10 @@ export default function GamesPage() {
     }
 
     fetchData();
+    
+    // Auto-refresh every 20 seconds
+    const interval = setInterval(() => fetchData(true), 20000);
+    return () => clearInterval(interval);
   }, []);
 
   if (checking) return <div className="loading"><div className="spinner" /></div>;
@@ -51,11 +64,20 @@ export default function GamesPage() {
     <>
       <Navbar />
       <main className="page-container">
-        <div className="page-header">
-          <h1 className="page-title">♟️ Partidas</h1>
-          <p className="page-subtitle">
-            Todas las partidas jugadas · Haz clic para ver el tablero
-          </p>
+        <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div>
+            <h1 className="page-title">♟️ Partidas</h1>
+            <p className="page-subtitle">
+              Todas las partidas jugadas · Haz clic para ver el tablero
+            </p>
+          </div>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="viewer-btn"
+            style={{ padding: '0.6rem 1.2rem', fontSize: '0.9rem' }}
+          >
+            🔄 Actualizar
+          </button>
         </div>
 
         {loading ? (
@@ -69,11 +91,17 @@ export default function GamesPage() {
           <div className="games-grid stagger">
             {games.map((game) => {
               const player = users[game.player_id];
+              const isLive = game.result === 'in_progress';
               return (
-                <Link key={game.id} href={`/game?id=${game.id}`} className="game-card animate-in" style={{ opacity: 0 }}>
+                <Link 
+                  key={game.id} 
+                  href={`/game?id=${game.id}`} 
+                  className={`game-card animate-in ${isLive ? 'live-border' : ''}`} 
+                  style={{ opacity: 1, border: isLive ? '2px solid var(--accent-red)' : 'none' }}
+                >
                   <div className="game-card-header">
                     <span className={`game-result-badge ${game.result}`}>
-                      {game.result === 'win' ? 'Victoria' : game.result === 'loss' ? 'Derrota' : game.result === 'draw' ? 'Tablas' : 'En vivo'}
+                      {isLive ? '🔴 EN VIVO' : game.result === 'win' ? 'Victoria' : game.result === 'loss' ? 'Derrota' : 'Tablas'}
                     </span>
                     <span className="game-card-elo">ELO {game.engine_elo}</span>
                   </div>
