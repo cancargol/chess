@@ -113,20 +113,23 @@ API_LAMBDA_ARN=$(aws lambda create-function \
     --zip-file fileb://function.zip \
     --query 'FunctionArn' --output text)
 
-# 6. Crear API Gateway HTTP API
+# 6. Crear/Actualizar API Gateway HTTP API
 echo "🌐 Configurando API Gateway..."
+
+# Intentar crear, si falla buscar la ID
 API_ID=$(aws apigatewayv2 create-api \
     --region $REGION \
     --name AjedrezMaestroHttpApi \
     --protocol-type HTTP \
     --target $API_LAMBDA_ARN \
-    --cors-configuration "AllowOrigins=['*'],AllowMethods=['GET','POST','OPTIONS'],AllowHeaders=['Content-Type','Authorization','Accept','Origin','X-Requested-With'],MaxAge=3600" \
-    --query 'ApiId' --output text 2>/dev/null)
+    --query 'ApiId' --output text 2>/dev/null || \
+    aws apigatewayv2 get-apis --query "Items[?Name=='AjedrezMaestroHttpApi'].ApiId | [0]" --output text)
 
-# Si ya existe, podemos buscar la id
-if [ -z "$API_ID" ]; then
-    API_ID=$(aws apigatewayv2 get-apis --query "Items[?Name=='AjedrezMaestroHttpApi'].ApiId | [0]" --output text)
-fi
+# Asegurar configuración de CORS (siempre actualizamos para aplicar cambios)
+aws apigatewayv2 update-api \
+    --region $REGION \
+    --api-id $API_ID \
+    --cors-configuration "AllowOrigins=['*'],AllowMethods=['GET','POST','OPTIONS'],AllowHeaders=['Content-Type','Authorization','Accept','Origin','X-Requested-With'],MaxAge=3600" >/dev/null
 
 aws lambda add-permission \
     --region $REGION \

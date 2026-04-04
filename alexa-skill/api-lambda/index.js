@@ -35,31 +35,33 @@ exports.handler = async (event) => {
   const headers = { 'Content-Type': 'application/json' };
 
   try {
-    // Route requests
-    if (method === 'GET' && path === '/api/players') {
+    // Route requests (flexible handle /api/ prefix or not, and extra slashes)
+    const normalizedPath = (path.startsWith('/api') ? path : `/api${path}`).replace(/\/+/g, '/');
+
+    if (method === 'GET' && normalizedPath === '/api/players') {
       return await getPlayers(headers);
     }
 
-    if (method === 'GET' && path.startsWith('/api/players/')) {
-      const id = path.replace('/api/players/', '');
+    if (method === 'GET' && normalizedPath.startsWith('/api/players/')) {
+      const id = normalizedPath.replace('/api/players/', '');
       return await getPlayerById(id, headers);
     }
 
-    if (method === 'GET' && path.startsWith('/api/player-games/')) {
-      const id = path.replace('/api/player-games/', '');
+    if (method === 'GET' && normalizedPath.startsWith('/api/player-games/')) {
+      const id = normalizedPath.replace('/api/player-games/', '');
       return await getPlayerGames(id, headers);
     }
 
-    if (method === 'GET' && path === '/api/games') {
+    if (method === 'GET' && normalizedPath === '/api/games') {
       return await getGames(headers);
     }
 
-    if (method === 'GET' && path.startsWith('/api/games/')) {
-      const id = path.replace('/api/games/', '');
+    if (method === 'GET' && normalizedPath.startsWith('/api/games/')) {
+      const id = normalizedPath.replace('/api/games/', '');
       return await getGameById(id, headers);
     }
 
-    if (method === 'POST' && path === '/api/auth') {
+    if (method === 'POST' && normalizedPath === '/api/auth') {
       const body = JSON.parse(event.body || '{}');
       return await verifyPin(body.pin, headers);
     }
