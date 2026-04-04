@@ -54,11 +54,14 @@ const MoveHandler = {
 
     // Cargar posición actual
     const chess = new Chess();
+    const START_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+    
     if (sessionAttributes.currentPgn) {
       chess.loadPgn(sessionAttributes.currentPgn);
-    } else {
+    } else if (sessionAttributes.currentFen && sessionAttributes.currentFen !== START_FEN) {
       chess.load(sessionAttributes.currentFen);
     }
+    // Si es START_FEN o no hay nada, new Chess() ya está en la posición inicial correcta sin flags de FEN.
 
     // Verificar que es turno de blancas (jugador siempre es blancas)
     if (chess.turn() !== 'w') {

@@ -120,7 +120,6 @@ async function getPlayerById(userId, headers) {
   const { web_pin, email, ...player } = result.Item;
   return response(200, { player }, headers);
 }
-
 async function getPlayerGames(playerId, headers) {
   if (!playerId) return response(400, { error: 'Missing player ID' }, headers);
 
@@ -133,7 +132,11 @@ async function getPlayerGames(playerId, headers) {
     Limit: 100,
   }));
 
-  return response(200, { games: result.Items || [] }, headers);
+  const games = (result.Items || []).sort((a, b) =>
+    new Date(b.finished_at || b.started_at || 0) - new Date(a.finished_at || a.started_at || 0)
+  );
+
+  return response(200, { games }, headers);
 }
 
 async function getGames(headers) {

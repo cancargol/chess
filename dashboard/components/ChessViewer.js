@@ -18,13 +18,21 @@ export default function ChessViewer({ pgn, playerName, engineElo, result }) {
       try {
         game.loadPgn(pgn);
         const history = game.history({ verbose: true });
+        const headers = game.header();
 
-        // Reset and replay to build positions array
-        game.reset();
+        // If PGN has a FEN header, we start from that position
+        const startPos = headers.FEN || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+        
+        // Re-replay moves on a separate instance to build the position list correctly
+        const tempGame = new Chess();
+        tempGame.load(startPos);
+        
+        positionsList[0] = tempGame.fen();
+        
         for (const move of history) {
-          game.move(move.san);
+          tempGame.move(move.san);
           movesList.push(move);
-          positionsList.push(game.fen());
+          positionsList.push(tempGame.fen());
         }
       } catch (e) {
         console.error('Error parsing PGN:', e);
