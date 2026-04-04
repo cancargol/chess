@@ -166,7 +166,6 @@ async function verifyPin(pin, headers) {
     TableName: USERS_TABLE,
     FilterExpression: 'web_pin = :pin',
     ExpressionAttributeValues: { ':pin': pin },
-    Limit: 1,
   }));
 
   const user = result.Items?.[0];

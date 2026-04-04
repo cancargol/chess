@@ -64,21 +64,29 @@ export async function getPlayerGames(playerId) {
 const AUTH_KEY = 'ajedrez_maestro_auth';
 
 export async function verifyPin(pin) {
-  const data = await apiFetch('/auth', {
-    method: 'POST',
-    body: JSON.stringify({ pin }),
-  });
+  try {
+    const data = await apiFetch('/auth', {
+      method: 'POST',
+      body: JSON.stringify({ pin }),
+    });
 
-  if (data.success) {
-    localStorage.setItem(AUTH_KEY, JSON.stringify({
-      pin,
-      userId: data.user.id,
-      userName: data.user.name,
-      timestamp: Date.now(),
-    }));
+    if (data.success) {
+      localStorage.setItem(AUTH_KEY, JSON.stringify({
+        pin,
+        userId: data.user.id,
+        userName: data.user.name,
+        timestamp: Date.now(),
+      }));
+    }
+
+    return data;
+  } catch (err) {
+    // If it's a 401 (Wrong PIN) or 400, return success: false instead of throwing
+    if (err.message.includes('401') || err.message.includes('400')) {
+      return { success: false, message: 'PIN incorrecto' };
+    }
+    throw err;
   }
-
-  return data;
 }
 
 export function getStoredAuth() {

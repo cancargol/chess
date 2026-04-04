@@ -68,7 +68,8 @@ export default function LoginForm({ onSuccess }) {
         inputRefs.current[0]?.focus();
       }
     } catch (err) {
-      setError('Error de conexión con el servidor. Inténtalo de nuevo.');
+      console.error('Login error:', err);
+      setError('Error de conexión o de CORS. Verifica que la API esté activa.');
       setPin(['', '', '', '']);
       inputRefs.current[0]?.focus();
     } finally {

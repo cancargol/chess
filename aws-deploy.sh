@@ -18,10 +18,20 @@ echo "🗄️ Creando tablas de DynamoDB..."
 aws dynamodb create-table \
     --region $REGION \
     --table-name ajedrez_maestro_users \
-    --attribute-definitions AttributeName=id,AttributeType=S AttributeName=name_lower,AttributeType=S \
+    --attribute-definitions AttributeName=id,AttributeType=S AttributeName=name_lower,AttributeType=S AttributeName=web_pin,AttributeType=S \
     --key-schema AttributeName=id,KeyType=HASH \
-    --global-secondary-indexes '[{"IndexName": "name_lower-index","KeySchema": [{"AttributeName": "name_lower","KeyType": "HASH"}],"Projection": {"ProjectionType": "ALL"}}]' \
-    --billing-mode PAY_PER_REQUEST >/dev/null 2>&1 || echo "Tabla users ya existe."
+    --global-secondary-indexes '[
+        {"IndexName": "name_lower-index","KeySchema": [{"AttributeName": "name_lower","KeyType": "HASH"}],"Projection": {"ProjectionType": "ALL"}},
+        {"IndexName": "web_pin-index","KeySchema": [{"AttributeName": "web_pin","KeyType": "HASH"}],"Projection": {"ProjectionType": "ALL"}}
+    ]' \
+    --billing-mode PAY_PER_REQUEST >/dev/null 2>&1 || (
+        echo "Tabla users ya existe. Verificando GSI..."
+        aws dynamodb update-table \
+            --region $REGION \
+            --table-name ajedrez_maestro_users \
+            --attribute-definitions AttributeName=web_pin,AttributeType=S \
+            --global-secondary-index-updates '[{"Create": {"IndexName": "web_pin-index","KeySchema": [{"AttributeName": "web_pin","KeyType": "HASH"}],"Projection": {"ProjectionType": "ALL"}}}]' >/dev/null 2>&1 || echo "GSI web_pin-index ya existe o no se pudo crear."
+    )
 
 aws dynamodb create-table \
     --region $REGION \
