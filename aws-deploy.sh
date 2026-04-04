@@ -116,20 +116,34 @@ API_LAMBDA_ARN=$(aws lambda create-function \
 # 6. Crear/Actualizar API Gateway HTTP API
 echo "🌐 Configurando API Gateway..."
 
-# Intentar crear, si falla buscar la ID
-API_ID=$(aws apigatewayv2 create-api \
-    --region $REGION \
-    --name AjedrezMaestroHttpApi \
-    --protocol-type HTTP \
-    --target $API_LAMBDA_ARN \
-    --query 'ApiId' --output text 2>/dev/null || \
-    aws apigatewayv2 get-apis --query "Items[?Name=='AjedrezMaestroHttpApi'].ApiId | [0]" --output text)
+# Buscar si ya existe la API por nombre
+API_ID=$(aws apigatewayv2 get-apis --query "Items[?Name=='AjedrezMaestroHttpApi'].ApiId | [0]" --output text)
 
-# Asegurar configuración de CORS (siempre actualizamos para aplicar cambios)
+if [ "$API_ID" == "None" ] || [ -z "$API_ID" ]; then
+    echo "Creando nueva HTTP API..."
+    API_ID=$(aws apigatewayv2 create-api \
+        --region $REGION \
+        --name AjedrezMaestroHttpApi \
+        --protocol-type HTTP \
+        --target $API_LAMBDA_ARN \
+        --query 'ApiId' --output text)
+else
+    echo "Usando API existente: $API_ID"
+    # Asegurarnos de que el target apunte a la última Lambda (por si acaso)
+    aws apigatewayv2 create-integration \
+        --region $REGION \
+        --api-id $API_ID \
+        --integration-type AWS_PROXY \
+        --integration-method POST \
+        --integration-uri $API_LAMBDA_ARN \
+        --payload-format-version 2.0 >/dev/null 2>&1 || true
+fi
+
+# Desactivar CORS en API Gateway (lo manejará la Lambda directamente para evitar fallos de preflight)
 aws apigatewayv2 update-api \
     --region $REGION \
     --api-id $API_ID \
-    --cors-configuration "AllowOrigins=['*'],AllowMethods=['GET','POST','OPTIONS'],AllowHeaders=['Content-Type','Authorization','Accept','Origin','X-Requested-With'],MaxAge=3600" >/dev/null
+    --cors-configuration "{}" >/dev/null
 
 aws lambda add-permission \
     --region $REGION \

@@ -30,46 +30,58 @@ exports.handler = async (event) => {
 
   const method = event.httpMethod || event.requestContext?.http?.method || 'GET';
   const path = event.path || event.rawPath || '/';
+  const origin = event.headers?.origin || event.headers?.Origin || '*';
 
-  // Content-Type for all responses
-  const headers = { 'Content-Type': 'application/json' };
+  // Manual CORS headers for full control
+  const corsHeaders = {
+    'Access-Control-Allow-Origin': origin,
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization, Accept, Origin, X-Requested-With',
+    'Access-Control-Max-Age': '3600',
+    'Content-Type': 'application/json',
+  };
+
+  // Handle CORS preflight explicitly
+  if (method === 'OPTIONS') {
+    return { statusCode: 204, headers: corsHeaders, body: '' };
+  }
 
   try {
     // Route requests (flexible handle /api/ prefix or not, and extra slashes)
     const normalizedPath = (path.startsWith('/api') ? path : `/api${path}`).replace(/\/+/g, '/');
 
     if (method === 'GET' && normalizedPath === '/api/players') {
-      return await getPlayers(headers);
+      return await getPlayers(corsHeaders);
     }
 
     if (method === 'GET' && normalizedPath.startsWith('/api/players/')) {
       const id = normalizedPath.replace('/api/players/', '');
-      return await getPlayerById(id, headers);
+      return await getPlayerById(id, corsHeaders);
     }
 
     if (method === 'GET' && normalizedPath.startsWith('/api/player-games/')) {
       const id = normalizedPath.replace('/api/player-games/', '');
-      return await getPlayerGames(id, headers);
+      return await getPlayerGames(id, corsHeaders);
     }
 
     if (method === 'GET' && normalizedPath === '/api/games') {
-      return await getGames(headers);
+      return await getGames(corsHeaders);
     }
 
     if (method === 'GET' && normalizedPath.startsWith('/api/games/')) {
       const id = normalizedPath.replace('/api/games/', '');
-      return await getGameById(id, headers);
+      return await getGameById(id, corsHeaders);
     }
 
     if (method === 'POST' && normalizedPath === '/api/auth') {
       const body = JSON.parse(event.body || '{}');
-      return await verifyPin(body.pin, headers);
+      return await verifyPin(body.pin, corsHeaders);
     }
 
-    return response(404, { error: 'Not found' }, headers);
+    return response(404, { error: 'Not found' }, corsHeaders);
   } catch (error) {
     console.error('Error:', error);
-    return response(500, { error: 'Internal server error' }, headers);
+    return response(500, { error: 'Internal server error' }, corsHeaders);
   }
 };
 
