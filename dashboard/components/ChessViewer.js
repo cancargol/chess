@@ -71,6 +71,12 @@ export default function ChessViewer({ pgn, playerName, engineElo, result }) {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Force client-side only rendering for the board to avoid hydration mismatch
+  const [isClient, setIsClient] = useState(false);
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   const goToStart = useCallback(() => setCurrentMoveIndex(-1), []);
   const goToEnd = useCallback(() => setCurrentMoveIndex(moves.length - 1), [moves.length]);
   const goBack = useCallback(() => setCurrentMoveIndex((i) => Math.max(-1, i - 1)), []);
@@ -120,19 +126,23 @@ export default function ChessViewer({ pgn, playerName, engineElo, result }) {
 
         {/* Board */}
         <div className="board-container">
-          <Chessboard
-            id={`board-${currentMoveIndex}-${currentFen.substring(0, 8)}`}
-            key={`${currentMoveIndex}-${currentFen}`}
-            position={currentFen}
-            boardWidth={boardWidth}
-            arePiecesDraggable={false}
-            customBoardStyle={{
-              borderRadius: '8px',
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5)',
-            }}
-            customDarkSquareStyle={{ backgroundColor: '#6c5ce7' }}
-            customLightSquareStyle={{ backgroundColor: '#d1c4e9' }}
-          />
+          {isClient ? (
+            <Chessboard
+              id="pgn-viewer-board"
+              key={`move-${currentMoveIndex}`}
+              position={currentFen}
+              boardWidth={boardWidth}
+              arePiecesDraggable={false}
+              customBoardStyle={{
+                borderRadius: '8px',
+                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5)',
+              }}
+              customDarkSquareStyle={{ backgroundColor: '#6c5ce7' }}
+              customLightSquareStyle={{ backgroundColor: '#d1c4e9' }}
+            />
+          ) : (
+            <div style={{ width: boardWidth, height: boardWidth, background: '#222', borderRadius: '8px' }} />
+          )}
         </div>
 
         {/* Controls */}
