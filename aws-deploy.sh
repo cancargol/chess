@@ -60,6 +60,8 @@ cd alexa-skill/lambda
 npm install --omit=dev >/dev/null 2>&1
 # REDUCIR TAMAÑO: quitamos aws-sdk que ya viene en la lambda runtime de AWS
 rm -rf node_modules/@aws-sdk
+# REDUCIR TAMAÑO: quitamos emscripten de stockfish (contiene ~46MB de archivos de prueba NNUE antiguos)
+rm -rf node_modules/stockfish/src/emscripten
 # Evitar que incluya otro function.zip recursivamente y limpiarlo primero
 rm -f function.zip
 zip -qr function.zip .
