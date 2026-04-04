@@ -60,15 +60,6 @@ cd alexa-skill/lambda
 npm install --omit=dev >/dev/null 2>&1
 # REDUCIR TAMAÑO: quitamos aws-sdk que ya viene en la lambda runtime de AWS
 rm -rf node_modules/@aws-sdk
-# REDUCIR TAMAÑO: quitamos archivos .nnue pesados (~45MB) que no son críticos para niveles bajos/medios
-find node_modules/stockfish -name "*.nnue" -type f -delete
-# REDUCIR TAMAÑO: quitamos versiones de stockfish que no usaremos (solo dejamos la single-threaded)
-rm -f node_modules/stockfish/stockfish-nnue-16-no-Worker.js
-rm -f node_modules/stockfish/stockfish-nnue-16-no-Worker.wasm
-rm -f node_modules/stockfish/stockfish-nnue-16-no-simd.js
-rm -f node_modules/stockfish/stockfish-nnue-16-no-simd.wasm
-rm -f node_modules/stockfish/stockfish-nnue-16.js
-rm -f node_modules/stockfish/stockfish-nnue-16.wasm
 # Evitar que incluya otro function.zip recursivamente y limpiarlo primero
 rm -f function.zip
 zip -qr function.zip .

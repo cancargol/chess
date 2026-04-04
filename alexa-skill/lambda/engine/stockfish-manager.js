@@ -32,26 +32,29 @@ async function initEngine() {
         }
       };
 
-      // stockfish.js puede usar onmessage o addEventListener
-      if (typeof engine.onmessage === 'function' || engine.onmessage === null) {
+      // stockfish.js v10/v16 compatibility
+      if (typeof engine.onmessage === 'function' || engine.onmessage === null || engine.onmessage === undefined) {
         engine.onmessage = (event) => {
           const msg = typeof event === 'string' ? event : event?.data;
-          console.log('Stockfish message:', msg);
-          messageHandler(msg);
+          if (msg) {
+            console.log('Stockfish:', msg);
+            messageHandler(msg);
+          }
         };
-      } else if (typeof engine.addMessageListener === 'function') {
+      }
+      
+      if (typeof engine.addMessageListener === 'function') {
         engine.addMessageListener((msg) => {
-          console.log('Stockfish message:', msg);
+          console.log('Stockfish:', msg);
           messageHandler(msg);
         });
       }
 
-      console.log('Stockfish initializing with uci command...');
-      // Enviar comando UCI para inicializar
+      console.log('Stockfish initializing (uci)...');
       sendCommand(engine, 'uci');
       stockfishEngine = engine;
     } catch (err) {
-      console.error('Failed to load Stockfish module:', err);
+      console.error('CRITICAL: Failed to load Stockfish module:', err);
       clearTimeout(timeout);
       reject(new Error(`Failed to load Stockfish: ${err.message}`));
     }
