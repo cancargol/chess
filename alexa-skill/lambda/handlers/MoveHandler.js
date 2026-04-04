@@ -90,6 +90,9 @@ const MoveHandler = {
         .getResponse();
     }
 
+    const engineElo = sessionAttributes.engineElo || DEFAULT_ELO;
+    const params = mapEloToStockfish(engineElo);
+
     let engineMoveUCI;
     let engineDescription = '';
 
