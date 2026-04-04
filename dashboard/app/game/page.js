@@ -35,7 +35,17 @@ function GameContent() {
     }
 
     fetchData();
-  }, [gameId]);
+    
+    // Auto-refresh every 10 seconds if game is in_progress
+    let intervalId;
+    if (game && game.result === 'in_progress') {
+      intervalId = setInterval(fetchData, 10000);
+    }
+    
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [gameId, game?.result]);
 
   if (loading) {
     return <div className="loading"><div className="spinner" /></div>;

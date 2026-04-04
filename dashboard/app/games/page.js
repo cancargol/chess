@@ -73,7 +73,7 @@ export default function GamesPage() {
                 <Link key={game.id} href={`/game?id=${game.id}`} className="game-card animate-in" style={{ opacity: 0 }}>
                   <div className="game-card-header">
                     <span className={`game-result-badge ${game.result}`}>
-                      {game.result === 'win' ? 'Victoria' : game.result === 'loss' ? 'Derrota' : 'Tablas'}
+                      {game.result === 'win' ? 'Victoria' : game.result === 'loss' ? 'Derrota' : game.result === 'draw' ? 'Tablas' : 'En vivo'}
                     </span>
                     <span className="game-card-elo">ELO {game.engine_elo}</span>
                   </div>
@@ -81,11 +81,11 @@ export default function GamesPage() {
                     {player?.name || 'Jugador desconocido'}
                   </div>
                   <div className="game-card-meta">
-                    <span>{game.moves_count || '?'} jugadas</span>
+                    <span>{game.moves_count || '0'} jugadas</span>
                     <span>
-                      {game.finished_at
-                        ? new Date(game.finished_at).toLocaleDateString('es-ES', {
-                            day: 'numeric', month: 'short', year: 'numeric',
+                      {game.finished_at || game.started_at
+                        ? new Date(game.finished_at || game.started_at).toLocaleDateString('es-ES', {
+                            day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
                           })
                         : 'Fecha desconocida'}
                     </span>

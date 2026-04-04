@@ -66,6 +66,7 @@ const NewGameHandler = {
     // Configurar sesión
     sessionAttributes.activeGameId = newGame.id;
     sessionAttributes.currentFen = newGame.fen;
+    sessionAttributes.currentPgn = newGame.pgn || '';
     sessionAttributes.stockfishSkillLevel = params.skillLevel;
     sessionAttributes.stockfishDepth = params.depth;
 

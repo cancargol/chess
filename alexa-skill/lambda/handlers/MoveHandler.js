@@ -53,7 +53,12 @@ const MoveHandler = {
     }
 
     // Cargar posición actual
-    const chess = new Chess(sessionAttributes.currentFen);
+    const chess = new Chess();
+    if (sessionAttributes.currentPgn) {
+      chess.loadPgn(sessionAttributes.currentPgn);
+    } else {
+      chess.load(sessionAttributes.currentFen);
+    }
 
     // Verificar que es turno de blancas (jugador siempre es blancas)
     if (chess.turn() !== 'w') {
@@ -162,6 +167,7 @@ const MoveHandler = {
     speechOutput += 'Te toca.';
 
     sessionAttributes.currentFen = chess.fen();
+    sessionAttributes.currentPgn = chess.pgn();
     handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
 
     // Persistir en DB

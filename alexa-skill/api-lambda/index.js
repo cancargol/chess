@@ -139,9 +139,6 @@ async function getPlayerGames(playerId, headers) {
 async function getGames(headers) {
   const result = await docClient.send(new ScanCommand({
     TableName: GAMES_TABLE,
-    FilterExpression: '#r <> :ip',
-    ExpressionAttributeNames: { '#r': 'result' },
-    ExpressionAttributeValues: { ':ip': 'in_progress' },
   }));
 
   const games = (result.Items || []).sort((a, b) =>

@@ -34,6 +34,15 @@ export default function ChessViewer({ pgn, playerName, engineElo, result }) {
     return { moves: movesList, positions: positionsList };
   }, [pgn]);
 
+  // Default to the last move when PGN is loaded/updated
+  useEffect(() => {
+    if (moves.length > 0) {
+      setCurrentMoveIndex(moves.length - 1);
+    } else {
+      setCurrentMoveIndex(-1);
+    }
+  }, [moves]);
+
   const currentFen = positions[currentMoveIndex + 1] || positions[0];
 
   // Responsive board size

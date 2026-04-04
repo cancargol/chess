@@ -43,6 +43,7 @@ const IdentifyUserHandler = {
         if (game && game.result === 'in_progress') {
           sessionAttributes.activeGameId = game.id;
           sessionAttributes.currentFen = game.fen;
+          sessionAttributes.currentPgn = game.pgn || '';
           sessionAttributes.engineElo = game.engine_elo;
 
           handlerInput.attributesManager.setSessionAttributes(sessionAttributes);

@@ -33,8 +33,22 @@ if [ "$API_ID" != "None" ]; then
     aws apigatewayv2 update-api \
         --region $REGION \
         --api-id $API_ID \
-        --cors-configuration "{}" >/dev/null
+        --cors-configuration '{
+            "AllowOrigins": ["https://cancargol.github.io"],
+            "AllowMethods": ["GET", "POST", "OPTIONS"],
+            "AllowHeaders": ["Content-Type", "Authorization", "Accept", "Origin", "X-Requested-With"],
+            "AllowCredentials": true,
+            "MaxAge": 3600
+        }' >/dev/null
     
+    aws lambda add-permission \
+        --region $REGION \
+        --function-name $FUNCTION_NAME \
+        --statement-id apigateway-invoke-$(date +%s) \
+        --action lambda:InvokeFunction \
+        --principal apigateway.amazonaws.com \
+        --source-arn "arn:aws:execute-api:$REGION:*:$API_ID/*" >/dev/null 2>&1 || true
+
     API_URL="https://${API_ID}.execute-api.${REGION}.amazonaws.com/api"
     echo "🎯 API_URL para GitHub Actions: $API_URL"
 else
