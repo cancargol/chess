@@ -5,15 +5,30 @@
       "intents": [
         {
           "name": "AMAZON.CancelIntent",
-          "samples": ["cancelar", "anular"]
+          "samples": [
+            "cancelar",
+            "anular"
+          ]
         },
         {
           "name": "AMAZON.HelpIntent",
-          "samples": ["ayuda", "ayúdame", "qué puedo hacer", "cómo se juega", "instrucciones"]
+          "samples": [
+            "ayuda",
+            "ayúdame",
+            "qué puedo hacer",
+            "cómo se juega",
+            "instrucciones"
+          ]
         },
         {
           "name": "AMAZON.StopIntent",
-          "samples": ["parar", "detener", "salir", "adiós", "hasta luego"]
+          "samples": [
+            "parar",
+            "detener",
+            "salir",
+            "adiós",
+            "hasta luego"
+          ]
         },
         {
           "name": "AMAZON.FallbackIntent",
@@ -235,7 +250,6 @@
             "quién va primero",
             "dime el ranking",
             "top tres",
-            "top tres",
             "clasificación"
           ]
         },
@@ -253,73 +267,420 @@
         {
           "name": "CHESS_PIECE",
           "values": [
-            { "id": "king", "name": { "value": "rey", "synonyms": ["el rey"] } },
-            { "id": "queen", "name": { "value": "dama", "synonyms": ["reina", "la dama", "la reina"] } },
-            { "id": "rook", "name": { "value": "torre", "synonyms": ["la torre"] } },
-            { "id": "bishop", "name": { "value": "alfil", "synonyms": ["el alfil"] } },
-            { "id": "knight", "name": { "value": "caballo", "synonyms": ["el caballo"] } },
-            { "id": "pawn", "name": { "value": "peón", "synonyms": ["peon", "el peón", "el peon"] } }
+            {
+              "id": "king",
+              "name": {
+                "value": "rey",
+                "synonyms": [
+                  "el rey"
+                ]
+              }
+            },
+            {
+              "id": "queen",
+              "name": {
+                "value": "dama",
+                "synonyms": [
+                  "reina",
+                  "la dama",
+                  "la reina"
+                ]
+              }
+            },
+            {
+              "id": "rook",
+              "name": {
+                "value": "torre",
+                "synonyms": [
+                  "la torre"
+                ]
+              }
+            },
+            {
+              "id": "bishop",
+              "name": {
+                "value": "alfil",
+                "synonyms": [
+                  "el alfil"
+                ]
+              }
+            },
+            {
+              "id": "knight",
+              "name": {
+                "value": "caballo",
+                "synonyms": [
+                  "el caballo"
+                ]
+              }
+            },
+            {
+              "id": "pawn",
+              "name": {
+                "value": "peón",
+                "synonyms": [
+                  "peon",
+                  "el peón",
+                  "el peon"
+                ]
+              }
+            }
           ]
         },
         {
           "name": "CHESS_COLUMN",
           "values": [
-            { "id": "a", "name": { "value": "a", "synonyms": ["alfa", "columna a"] } },
-            { "id": "b", "name": { "value": "b", "synonyms": ["bravo", "columna b", "be"] } },
-            { "id": "c", "name": { "value": "c", "synonyms": ["charlie", "columna c", "ce"] } },
-            { "id": "d", "name": { "value": "d", "synonyms": ["delta", "columna d", "de"] } },
-            { "id": "e", "name": { "value": "e", "synonyms": ["echo", "columna e"] } },
-            { "id": "f", "name": { "value": "f", "synonyms": ["foxtrot", "columna f", "efe"] } },
-            { "id": "g", "name": { "value": "g", "synonyms": ["golf", "columna g", "ge"] } },
-            { "id": "h", "name": { "value": "h", "synonyms": ["hotel", "columna h", "hache"] } }
+            {
+              "id": "a",
+              "name": {
+                "value": "a",
+                "synonyms": [
+                  "alfa",
+                  "columna a"
+                ]
+              }
+            },
+            {
+              "id": "b",
+              "name": {
+                "value": "b",
+                "synonyms": [
+                  "bravo",
+                  "columna b",
+                  "be"
+                ]
+              }
+            },
+            {
+              "id": "c",
+              "name": {
+                "value": "c",
+                "synonyms": [
+                  "charlie",
+                  "columna c",
+                  "ce"
+                ]
+              }
+            },
+            {
+              "id": "d",
+              "name": {
+                "value": "d",
+                "synonyms": [
+                  "delta",
+                  "columna d",
+                  "de"
+                ]
+              }
+            },
+            {
+              "id": "e",
+              "name": {
+                "value": "e",
+                "synonyms": [
+                  "echo",
+                  "columna e"
+                ]
+              }
+            },
+            {
+              "id": "f",
+              "name": {
+                "value": "f",
+                "synonyms": [
+                  "foxtrot",
+                  "columna f",
+                  "efe"
+                ]
+              }
+            },
+            {
+              "id": "g",
+              "name": {
+                "value": "g",
+                "synonyms": [
+                  "golf",
+                  "columna g",
+                  "ge"
+                ]
+              }
+            },
+            {
+              "id": "h",
+              "name": {
+                "value": "h",
+                "synonyms": [
+                  "hotel",
+                  "columna h",
+                  "hache"
+                ]
+              }
+            }
           ]
         },
         {
           "name": "CHESS_ROW",
           "values": [
-            { "id": "1", "name": { "value": "1", "synonyms": ["uno", "primera", "fila uno"] } },
-            { "id": "2", "name": { "value": "2", "synonyms": ["dos", "segunda", "fila dos"] } },
-            { "id": "3", "name": { "value": "3", "synonyms": ["tres", "tercera", "fila tres"] } },
-            { "id": "4", "name": { "value": "4", "synonyms": ["cuatro", "cuarta", "fila cuatro"] } },
-            { "id": "5", "name": { "value": "5", "synonyms": ["cinco", "quinta", "fila cinco"] } },
-            { "id": "6", "name": { "value": "6", "synonyms": ["seis", "sexta", "fila seis"] } },
-            { "id": "7", "name": { "value": "7", "synonyms": ["siete", "séptima", "fila siete"] } },
-            { "id": "8", "name": { "value": "8", "synonyms": ["ocho", "octava", "fila ocho"] } }
+            {
+              "id": "1",
+              "name": {
+                "value": "1",
+                "synonyms": [
+                  "uno",
+                  "primera",
+                  "fila 1"
+                ]
+              }
+            },
+            {
+              "id": "2",
+              "name": {
+                "value": "2",
+                "synonyms": [
+                  "dos",
+                  "segunda",
+                  "fila 2"
+                ]
+              }
+            },
+            {
+              "id": "3",
+              "name": {
+                "value": "3",
+                "synonyms": [
+                  "tres",
+                  "tercera",
+                  "fila 3"
+                ]
+              }
+            },
+            {
+              "id": "4",
+              "name": {
+                "value": "4",
+                "synonyms": [
+                  "cuatro",
+                  "cuarta",
+                  "fila 4"
+                ]
+              }
+            },
+            {
+              "id": "5",
+              "name": {
+                "value": "5",
+                "synonyms": [
+                  "cinco",
+                  "quinta",
+                  "fila 5"
+                ]
+              }
+            },
+            {
+              "id": "6",
+              "name": {
+                "value": "6",
+                "synonyms": [
+                  "seis",
+                  "sexta",
+                  "fila 6"
+                ]
+              }
+            },
+            {
+              "id": "7",
+              "name": {
+                "value": "7",
+                "synonyms": [
+                  "siete",
+                  "séptima",
+                  "fila 7"
+                ]
+              }
+            },
+            {
+              "id": "8",
+              "name": {
+                "value": "8",
+                "synonyms": [
+                  "ocho",
+                  "octava",
+                  "fila 8"
+                ]
+              }
+            }
           ]
         },
         {
           "name": "CHESS_ACTION",
           "values": [
-            { "id": "capture", "name": { "value": "captura", "synonyms": ["captura en", "come", "toma", "x"] } },
-            { "id": "move", "name": { "value": "mueve", "synonyms": ["va a", "juega", "mover"] } }
+            {
+              "id": "capture",
+              "name": {
+                "value": "captura",
+                "synonyms": [
+                  "captura en",
+                  "come",
+                  "toma",
+                  "x"
+                ]
+              }
+            },
+            {
+              "id": "move",
+              "name": {
+                "value": "mueve",
+                "synonyms": [
+                  "va a",
+                  "juega",
+                  "mover"
+                ]
+              }
+            }
           ]
         },
         {
           "name": "CHESS_CASTLING",
           "values": [
-            { "id": "kingside", "name": { "value": "enroque corto", "synonyms": ["enroque de rey", "enroque kingside", "enroque por el lado del rey"] } },
-            { "id": "queenside", "name": { "value": "enroque largo", "synonyms": ["enroque de dama", "enroque queenside", "enroque por el lado de la dama"] } }
+            {
+              "id": "kingside",
+              "name": {
+                "value": "enroque corto",
+                "synonyms": [
+                  "enroque de rey",
+                  "enroque kingside",
+                  "enroque por el lado del rey"
+                ]
+              }
+            },
+            {
+              "id": "queenside",
+              "name": {
+                "value": "enroque largo",
+                "synonyms": [
+                  "enroque de dama",
+                  "enroque queenside",
+                  "enroque por el lado de la dama"
+                ]
+              }
+            }
           ]
         },
         {
           "name": "CHESS_PROMOTION",
           "values": [
-            { "id": "queen", "name": { "value": "dama", "synonyms": ["reina", "corona dama", "coronar dama"] } },
-            { "id": "rook", "name": { "value": "torre", "synonyms": ["corona torre", "coronar torre"] } },
-            { "id": "bishop", "name": { "value": "alfil", "synonyms": ["corona alfil", "coronar alfil"] } },
-            { "id": "knight", "name": { "value": "caballo", "synonyms": ["corona caballo", "coronar caballo"] } }
+            {
+              "id": "queen",
+              "name": {
+                "value": "dama",
+                "synonyms": [
+                  "reina",
+                  "corona dama",
+                  "coronar dama"
+                ]
+              }
+            },
+            {
+              "id": "rook",
+              "name": {
+                "value": "torre",
+                "synonyms": [
+                  "corona torre",
+                  "coronar torre"
+                ]
+              }
+            },
+            {
+              "id": "bishop",
+              "name": {
+                "value": "alfil",
+                "synonyms": [
+                  "corona alfil",
+                  "coronar alfil"
+                ]
+              }
+            },
+            {
+              "id": "knight",
+              "name": {
+                "value": "caballo",
+                "synonyms": [
+                  "corona caballo",
+                  "coronar caballo"
+                ]
+              }
+            }
           ]
         },
         {
           "name": "EMAIL_EXTENSION",
           "values": [
-            { "id": "com", "name": { "value": "com", "synonyms": ["punto com"] } },
-            { "id": "es", "name": { "value": "es", "synonyms": ["punto es"] } },
-            { "id": "org", "name": { "value": "org", "synonyms": ["punto org"] } },
-            { "id": "net", "name": { "value": "net", "synonyms": ["punto net"] } },
-            { "id": "gmail.com", "name": { "value": "gmail punto com", "synonyms": ["gmail.com", "gmail com"] } },
-            { "id": "hotmail.com", "name": { "value": "hotmail punto com", "synonyms": ["hotmail.com", "hotmail com"] } },
-            { "id": "yahoo.com", "name": { "value": "yahoo punto com", "synonyms": ["yahoo.com", "yahoo com"] } }
+            {
+              "id": "com",
+              "name": {
+                "value": "com",
+                "synonyms": [
+                  "punto com"
+                ]
+              }
+            },
+            {
+              "id": "es",
+              "name": {
+                "value": "es",
+                "synonyms": [
+                  "punto es"
+                ]
+              }
+            },
+            {
+              "id": "org",
+              "name": {
+                "value": "org",
+                "synonyms": [
+                  "punto org"
+                ]
+              }
+            },
+            {
+              "id": "net",
+              "name": {
+                "value": "net",
+                "synonyms": [
+                  "punto net"
+                ]
+              }
+            },
+            {
+              "id": "gmail.com",
+              "name": {
+                "value": "gmail punto com",
+                "synonyms": [
+                  "gmail.com",
+                  "gmail com"
+                ]
+              }
+            },
+            {
+              "id": "hotmail.com",
+              "name": {
+                "value": "hotmail punto com",
+                "synonyms": [
+                  "hotmail.com",
+                  "hotmail com"
+                ]
+              }
+            },
+            {
+              "id": "yahoo.com",
+              "name": {
+                "value": "yahoo punto com",
+                "synonyms": [
+                  "yahoo.com",
+                  "yahoo com"
+                ]
+              }
+            }
           ]
         }
       ]
