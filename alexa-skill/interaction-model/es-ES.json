@@ -235,7 +235,7 @@
             "quién va primero",
             "dime el ranking",
             "top tres",
-            "top 3",
+            "top tres",
             "clasificación"
           ]
         },
@@ -277,14 +277,14 @@
         {
           "name": "CHESS_ROW",
           "values": [
-            { "id": "1", "name": { "value": "1", "synonyms": ["uno", "primera", "fila 1"] } },
-            { "id": "2", "name": { "value": "2", "synonyms": ["dos", "segunda", "fila 2"] } },
-            { "id": "3", "name": { "value": "3", "synonyms": ["tres", "tercera", "fila 3"] } },
-            { "id": "4", "name": { "value": "4", "synonyms": ["cuatro", "cuarta", "fila 4"] } },
-            { "id": "5", "name": { "value": "5", "synonyms": ["cinco", "quinta", "fila 5"] } },
-            { "id": "6", "name": { "value": "6", "synonyms": ["seis", "sexta", "fila 6"] } },
-            { "id": "7", "name": { "value": "7", "synonyms": ["siete", "séptima", "fila 7"] } },
-            { "id": "8", "name": { "value": "8", "synonyms": ["ocho", "octava", "fila 8"] } }
+            { "id": "1", "name": { "value": "1", "synonyms": ["uno", "primera", "fila uno"] } },
+            { "id": "2", "name": { "value": "2", "synonyms": ["dos", "segunda", "fila dos"] } },
+            { "id": "3", "name": { "value": "3", "synonyms": ["tres", "tercera", "fila tres"] } },
+            { "id": "4", "name": { "value": "4", "synonyms": ["cuatro", "cuarta", "fila cuatro"] } },
+            { "id": "5", "name": { "value": "5", "synonyms": ["cinco", "quinta", "fila cinco"] } },
+            { "id": "6", "name": { "value": "6", "synonyms": ["seis", "sexta", "fila seis"] } },
+            { "id": "7", "name": { "value": "7", "synonyms": ["siete", "séptima", "fila siete"] } },
+            { "id": "8", "name": { "value": "8", "synonyms": ["ocho", "octava", "fila ocho"] } }
           ]
         },
         {

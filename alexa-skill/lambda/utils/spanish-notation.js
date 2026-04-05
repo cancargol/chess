@@ -99,10 +99,15 @@ function parseSpanishMove(voiceInput) {
   // Buscar la pieza
   let pieceSAN = '';
   let foundPiece = false;
+  let inputForSquares = input;
+
   for (const [name, san] of Object.entries(PIECE_MAP)) {
     if (input.startsWith(name)) {
       pieceSAN = san;
       foundPiece = true;
+      // IMPORTANTE: Quitar la pieza para evitar que su última letra (ej: damA) 
+      // se confunda con una columna de desambiguación.
+      inputForSquares = input.substring(name.length).trim();
       break;
     }
   }
@@ -110,16 +115,22 @@ function parseSpanishMove(voiceInput) {
   // Detectar captura
   const isCapture = input.includes('captura') || input.includes('come') || input.includes('toma');
 
-  // Extraer casillas del texto
+  // Extraer casillas del texto (usando el input limpio)
   const squares = [];
   const squareRegex = /([a-h])\s*([1-8])/g;
   let match;
-  while ((match = squareRegex.exec(input)) !== null) {
+  while ((match = squareRegex.exec(inputForSquares)) !== null) {
     squares.push(`${match[1]}${match[2]}`);
   }
 
   if (squares.length === 0) {
-    return { type: 'error', error: 'No se encontró una casilla válida en el movimiento.' };
+    // Si no hay casillas en el resto, miramos si hay una en el input total (fallback)
+    const fallbackMatch = input.match(/([a-h])\s*([1-8])/);
+    if (fallbackMatch) {
+      squares.push(`${fallbackMatch[1]}${fallbackMatch[2]}`);
+    } else {
+      return { type: 'error', error: 'No se encontró una casilla válida en el movimiento.' };
+    }
   }
 
   // Buscar coronación
@@ -134,23 +145,18 @@ function parseSpanishMove(voiceInput) {
   // Si hay 2 casillas, puede ser desambiguación o coordenadas
   if (squares.length >= 2) {
     // "Torre a1 a d1" → from=a1, to=d1
-    if (foundPiece || !foundPiece) {
-      return { type: 'coordinates', from: squares[0], to: squares[1], promotion };
-    }
+    return { type: 'coordinates', from: squares[0], to: squares[1], promotion };
   }
 
   // Una sola casilla destino
   const targetSquare = squares[squares.length - 1];
 
   // Buscar columna de desambiguación (ej: "Torre a d1" → "Rad1")
+  // Usamos el input limpio para evitar falsos positivos con el nombre de la pieza
   let disambiguation = '';
-  const disambigMatch = input.match(/([a-h])\s+[a-h][1-8]/);
-  if (disambigMatch && foundPiece && squares.length === 1) {
-    // Verificar que no sea la columna del destino
-    const disambigCol = disambigMatch[1];
-    if (disambigCol !== targetSquare[0]) {
-      disambiguation = disambigCol;
-    }
+  const disambigMatch = inputForSquares.match(/^([a-h])\s+[a-h][1-8]/);
+  if (disambigMatch && foundPiece) {
+    disambiguation = disambigMatch[1];
   }
 
   // Construir SAN
