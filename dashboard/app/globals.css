@@ -840,3 +840,48 @@ a:hover {
 .stagger > *:nth-child(8) { animation-delay: 0.4s; }
 .stagger > *:nth-child(9) { animation-delay: 0.45s; }
 .stagger > *:nth-child(10) { animation-delay: 0.5s; }
+
+/* ============================================================
+   CHESS CUSTOM OVERRIDES
+   ============================================================ */
+.board-container {
+  overflow: visible;
+  z-index: 5;
+}
+
+/* Ensure the chessboard component doesn't get squashed */
+.board-container > div {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Animations */
+.animate-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.pulse-dot {
+  width: 10px;
+  height: 10px;
+  background: var(--accent-red);
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 8px;
+  box-shadow: 0 0 0 0 rgba(225, 112, 85, 0.7);
+  animation: pulse-red 2s infinite;
+}
+
+@keyframes pulse-red {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(225, 112, 85, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(225, 112, 85, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(225, 112, 85, 0); }
+}
+
+.spinning {
+  animation: spin 1s linear infinite;
+}

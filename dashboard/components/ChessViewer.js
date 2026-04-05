@@ -73,14 +73,40 @@ export default function ChessViewer({ pgn, playerName, engineElo, result }) {
 
   // Force client-side only rendering for the board to avoid hydration mismatch
   const [isClient, setIsClient] = useState(false);
+  const [boardPosition, setBoardPosition] = useState('start');
+
   useEffect(() => {
     setIsClient(true);
   }, []);
+
+  // Use a dedicated state for boardPosition to break potential rendering locks
+  useEffect(() => {
+    if (!isClient) return;
+    
+    const fen = positions[currentMoveIndex + 1] || positions[0];
+    
+    // Sanitize FEN: Only send the piece placement and active color strings to react-chessboard 
+    // to avoid issues with move counters or other PGN-specific parts.
+    const sanitizedFen = fen.split(' ').slice(0, 2).join(' ');
+    
+    // Tiny delay to nudge the component lifecycle
+    const timer = setTimeout(() => {
+      setBoardPosition(sanitizedFen);
+    }, 10);
+    return () => clearTimeout(timer);
+  }, [currentMoveIndex, positions, isClient]);
 
   const goToStart = useCallback(() => setCurrentMoveIndex(-1), []);
   const goToEnd = useCallback(() => setCurrentMoveIndex(moves.length - 1), [moves.length]);
   const goBack = useCallback(() => setCurrentMoveIndex((i) => Math.max(-1, i - 1)), []);
   const goForward = useCallback(() => setCurrentMoveIndex((i) => Math.min(moves.length - 1, i + 1)), [moves.length]);
+  const resync = useCallback(() => {
+    setBoardPosition('start');
+    setTimeout(() => {
+       const fen = positions[currentMoveIndex + 1] || positions[0];
+       setBoardPosition(fen.split(' ').slice(0, 2).join(' '));
+    }, 100);
+  }, [currentMoveIndex, positions]);
 
   // Keyboard navigation
   useEffect(() => {
@@ -129,8 +155,8 @@ export default function ChessViewer({ pgn, playerName, engineElo, result }) {
           {isClient ? (
             <Chessboard
               id="pgn-viewer-board"
-              key={`move-${currentMoveIndex}`}
-              position={currentFen}
+              key={`move-${currentMoveIndex}-${boardPosition.substring(0, 5)}`}
+              position={boardPosition}
               boardWidth={boardWidth}
               arePiecesDraggable={false}
               customBoardStyle={{
@@ -177,9 +203,25 @@ export default function ChessViewer({ pgn, playerName, engineElo, result }) {
           border: '1px dashed #444',
           maxWidth: boardWidth
         }}>
-          <div style={{ fontWeight: 'bold', color: '#fff', marginBottom: '0.5rem' }}>DEBUG INFO</div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+            <div style={{ fontWeight: 'bold', color: '#fff' }}>DEBUG INFO</div>
+            <button 
+              onClick={resync}
+              style={{
+                background: 'var(--accent-primary)',
+                border: 'none',
+                borderRadius: '4px',
+                color: 'white',
+                padding: '2px 8px',
+                fontSize: '0.6rem',
+                cursor: 'pointer'
+              }}
+            >
+              🔄 Resync Board
+            </button>
+          </div>
           <div>Index: {currentMoveIndex}</div>
-          <div style={{ wordBreak: 'break-all' }}>FEN: {currentFen}</div>
+          <div style={{ wordBreak: 'break-all' }}>FEN: {boardPosition}</div>
           <div style={{ wordBreak: 'break-all', marginTop: '0.5rem' }}>PGN (first 100): {pgn?.substring(0, 100)}...</div>
           <div>Positions available: {positions.length}</div>
         </div>
