@@ -1,7 +1,7 @@
 {
   "interactionModel": {
     "languageModel": {
-      "invocationName": "ajedrez maestro",
+      "invocationName": "can cargol chess",
       "intents": [
         {
           "name": "AMAZON.CancelIntent",
@@ -222,16 +222,30 @@
         },
         {
           "name": "ResignIntent",
-          "slots": [],
           "samples": [
             "me rindo",
             "abandono",
             "abandonar",
-            "rendirme",
-            "abandonar partida",
-            "me doy por vencido",
-            "abandono la partida",
-            "me retiro"
+            "rendirme"
+          ]
+        },
+        {
+          "name": "RankingIntent",
+          "samples": [
+            "quién va primero",
+            "dime el ranking",
+            "top tres",
+            "top 3",
+            "clasificación"
+          ]
+        },
+        {
+          "name": "PhoneticHelpIntent",
+          "samples": [
+            "cuáles eran las letras",
+            "dime las abreviaturas",
+            "ayuda con las letras",
+            "alfabeto fonético"
           ]
         }
       ],

@@ -1,5 +1,5 @@
 /**
- * API Lambda para el Dashboard de Ajedrez Maestro.
+ * API Lambda para el Dashboard de CanCargolChess.
  * Sirve datos de DynamoDB al dashboard estático en GitHub Pages.
  *
  * Endpoints:

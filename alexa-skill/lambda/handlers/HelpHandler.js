@@ -14,7 +14,7 @@ const HelpHandler = {
     const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
     const hasGame = !!sessionAttributes.activeGameId;
 
-    let help = 'Ajedrez Maestro te permite jugar partidas de ajedrez contra un motor de distintos niveles. ';
+    let help = 'CanCargolChess te permite jugar partidas de ajedrez contra un motor de distintos niveles. ';
     help += 'Puedes usar estos comandos: ';
     help += '"Nueva partida" para empezar una partida. ';
     help += '"Ajusta el nivel a" seguido de un ELO entre 100 y 3000. ';

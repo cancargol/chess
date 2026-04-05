@@ -36,6 +36,7 @@ const IdentifyUserHandler = {
       sessionAttributes.userName = existingUser.name;
       sessionAttributes.userElo = existingUser.current_elo;
       sessionAttributes.engineElo = existingUser.current_elo;
+      sessionAttributes.webPin = existingUser.web_pin;
 
       // Verificar partida activa
       if (existingUser.active_game_id) {
@@ -131,6 +132,7 @@ const ProvideEmailHandler = {
       sessionAttributes.userName = newUser.name;
       sessionAttributes.userElo = DEFAULT_ELO;
       sessionAttributes.engineElo = DEFAULT_ELO;
+      sessionAttributes.webPin = newUser.web_pin;
       delete sessionAttributes.pendingUserName;
       delete sessionAttributes.awaitingEmail;
 

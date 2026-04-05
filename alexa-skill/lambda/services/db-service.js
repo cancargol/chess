@@ -1,5 +1,5 @@
 /**
- * Servicio de base de datos DynamoDB para Ajedrez Maestro.
+ * Servicio de base de datos DynamoDB para CanCargolChess.
  * Gestiona usuarios y partidas.
  */
 

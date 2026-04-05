@@ -34,7 +34,7 @@ if [ "$API_ID" != "None" ]; then
         --region $REGION \
         --api-id $API_ID \
         --cors-configuration '{
-            "AllowOrigins": ["https://cancargol.github.io"],
+            "AllowOrigins": ["https://cancargol.github.io", "http://localhost:3000"],
             "AllowMethods": ["GET", "POST", "OPTIONS"],
             "AllowHeaders": ["Content-Type", "Authorization", "Accept", "Origin", "X-Requested-With"],
             "AllowCredentials": true,

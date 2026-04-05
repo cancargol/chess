@@ -1,7 +1,7 @@
 {
   "name": "ajedrez-maestro-lambda",
   "version": "1.0.0",
-  "description": "Alexa Skill Lambda - Ajedrez Maestro con Stockfish",
+  "description": "Alexa Skill Lambda - CanCargolChess con Stockfish",
   "main": "index.js",
   "scripts": {
     "test": "node test.js",

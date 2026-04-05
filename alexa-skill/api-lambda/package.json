@@ -1,7 +1,7 @@
 {
   "name": "ajedrez-maestro-api",
   "version": "1.0.0",
-  "description": "API Lambda para el Dashboard de Ajedrez Maestro",
+  "description": "API Lambda para el Dashboard de CanCargolChess",
   "main": "index.js",
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.500.0",

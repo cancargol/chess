@@ -9,7 +9,7 @@ export default function RankingTable({ players }) {
         <div className="empty-state-icon">♟️</div>
         <p>No hay jugadores registrados aún.</p>
         <p style={{ fontSize: '0.85rem', marginTop: '0.5rem' }}>
-          Abre la Skill de Alexa y di &quot;Alexa, abre Ajedrez Maestro&quot; para empezar.
+          Abre la Skill de Alexa y di &quot;Alexa, abre CanCargolChess&quot; para empezar.
         </p>
       </div>
     );

@@ -1,5 +1,5 @@
 /**
- * Ajedrez Maestro — Alexa Skill Lambda Handler
+ * CanCargolChess — Alexa Skill Lambda Handler
  *
  * Entry point para la Skill de Alexa que permite jugar al ajedrez
  * contra el motor Stockfish, con distintos niveles de dificultad.
@@ -23,6 +23,8 @@ const SetEloHandler = require('./handlers/SetEloHandler');
 const MoveHandler = require('./handlers/MoveHandler');
 const StatusHandler = require('./handlers/StatusHandler');
 const ResignHandler = require('./handlers/ResignHandler');
+const RankingHandler = require('./handlers/RankingHandler');
+const PhoneticHelpHandler = require('./handlers/PhoneticHelpHandler');
 const NewGameHandler = require('./handlers/NewGameHandler');
 const {
   HelpHandler,
@@ -80,6 +82,8 @@ exports.handler = skillBuilder
     NewGameHandler,
     StatusHandler,
     ResignHandler,
+    RankingHandler,
+    PhoneticHelpHandler,
     HelpHandler,
     CancelStopHandler,
     FallbackHandler,
@@ -88,5 +92,5 @@ exports.handler = skillBuilder
   .addErrorHandlers(ErrorHandler)
   .addRequestInterceptors(LoadAttributesInterceptor)
   .addResponseInterceptors(LogResponseInterceptor)
-  .withCustomUserAgent('ajedrez-maestro/v1.0')
+  .withCustomUserAgent('cancargolchess/v1.1')
   .lambda();

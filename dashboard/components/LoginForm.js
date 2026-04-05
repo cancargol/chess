@@ -81,7 +81,7 @@ export default function LoginForm({ onSuccess }) {
     <div className="login-container">
       <div className="login-card animate-slide-up">
         <div className="login-icon">♚</div>
-        <h1 className="login-title">Ajedrez Maestro</h1>
+        <h1 className="login-title">CanCargolChess</h1>
         <p className="login-subtitle">
           Introduce tu PIN de 4 dígitos para acceder al dashboard.
         </p>
@@ -116,7 +116,7 @@ export default function LoginForm({ onSuccess }) {
 
         <p className="login-hint">
           💡 Tu PIN se genera al crear tu perfil en Alexa. Di
-          &quot;Alexa, abre Ajedrez Maestro&quot; y después tu nombre para obtenerlo.
+          &quot;Alexa, abre CanCargolChess&quot; y después tu nombre para obtenerlo.
         </p>
       </div>
     </div>

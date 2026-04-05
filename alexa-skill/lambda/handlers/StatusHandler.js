@@ -40,6 +40,11 @@ const StatusHandler = {
     let speech = summary + ' ';
     speech += `Últimas jugadas: ${recentMoves}. `;
     speech += `Partida contra motor ELO ${sessionAttributes.engineElo}. `;
+    
+    if (sessionAttributes.webPin) {
+      speech += `Recuerda que puedes ver el tablero en la web: cancargol punto guithub punto i o, barra, chess. Tu PIN es ${sessionAttributes.webPin.split('').join(' ')}. `;
+    }
+    
     speech += 'Di tu movimiento para continuar.';
 
     return handlerInput.responseBuilder
