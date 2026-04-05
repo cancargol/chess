@@ -885,3 +885,68 @@ a:hover {
 .spinning {
   animation: spin 1s linear infinite;
 }
+
+/* ============================================================
+   ALEXA SPEECH BUBBLE
+   ============================================================ */
+.alexa-bubble-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 2rem;
+  width: 100%;
+}
+
+.alexa-bubble {
+  position: relative;
+  background: var(--gradient-primary);
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: var(--radius-lg);
+  font-size: 0.9rem;
+  font-weight: 600;
+  box-shadow: var(--shadow-lg), var(--shadow-glow);
+  max-width: 280px;
+  animation: float 3s ease-in-out infinite;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.alexa-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 10px 10px 0;
+  border-style: solid;
+  border-color: #6c5ce7 transparent transparent; /* Coincide con el inicio del degradado */
+}
+
+.alexa-bubble .alexa-name {
+  color: var(--accent-gold);
+  font-weight: 800;
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.alexa-bubble-icon {
+  font-size: 1.5rem;
+  margin-top: 0.75rem;
+  color: var(--accent-blue);
+  filter: drop-shadow(0 0 5px rgba(116, 185, 255, 0.4));
+  animation: pulse 2s infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; transform: scale(0.95); }
+  50% { opacity: 1; transform: scale(1.05); }
+  100% { opacity: 0.6; transform: scale(0.95); }
+}

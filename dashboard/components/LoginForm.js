@@ -114,10 +114,16 @@ export default function LoginForm({ onSuccess }) {
 
         {error && <p className="login-error">{error}</p>}
 
-        <p className="login-hint">
-          💡 Tu PIN se genera al crear tu perfil en Alexa. Di
-          &quot;Alexa, abre CanCargolChess&quot; y después tu nombre para obtenerlo.
-        </p>
+        <div className="alexa-bubble-container">
+          <div className="alexa-bubble">
+            <span className="alexa-name">Alexa</span>
+            &quot;Abre CanCargolChess&quot;
+          </div>
+          <div className="alexa-bubble-icon">🌀</div>
+          <p className="login-hint" style={{ marginTop: '1rem', maxWidth: '240px' }}>
+            Tu PIN se genera al crear tu perfil por voz. Di el comando de arriba y después tu nombre.
+          </p>
+        </div>
       </div>
     </div>
   );
