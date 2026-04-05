@@ -85,13 +85,9 @@ export default function ChessViewer({ pgn, playerName, engineElo, result }) {
     
     const fen = positions[currentMoveIndex + 1] || positions[0];
     
-    // Sanitize FEN: Only send the piece placement and active color strings to react-chessboard 
-    // to avoid issues with move counters or other PGN-specific parts.
-    const sanitizedFen = fen.split(' ').slice(0, 2).join(' ');
-    
     // Tiny delay to nudge the component lifecycle
     const timer = setTimeout(() => {
-      setBoardPosition(sanitizedFen);
+      setBoardPosition(fen);
     }, 10);
     return () => clearTimeout(timer);
   }, [currentMoveIndex, positions, isClient]);
@@ -104,7 +100,7 @@ export default function ChessViewer({ pgn, playerName, engineElo, result }) {
     setBoardPosition('start');
     setTimeout(() => {
        const fen = positions[currentMoveIndex + 1] || positions[0];
-       setBoardPosition(fen.split(' ').slice(0, 2).join(' '));
+       setBoardPosition(fen);
     }, 100);
   }, [currentMoveIndex, positions]);
 
@@ -155,7 +151,7 @@ export default function ChessViewer({ pgn, playerName, engineElo, result }) {
           {isClient ? (
             <Chessboard
               id="pgn-viewer-board"
-              key={`move-${currentMoveIndex}-${boardPosition.substring(0, 5)}`}
+              key={`move-${currentMoveIndex}-${boardPosition}`}
               position={boardPosition}
               boardWidth={boardWidth}
               arePiecesDraggable={false}
