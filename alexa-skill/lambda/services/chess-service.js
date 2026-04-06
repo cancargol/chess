@@ -23,7 +23,7 @@ function createGame(fen) {
  * @returns {{ success: boolean, move?: object, san?: string, description?: string, error?: string }}
  */
 function makePlayerMove(chess, voiceInput) {
-  const parsed = parseSpanishMove(voiceInput);
+  const parsed = parseSpanishMove(voiceInput, chess);
 
   if (parsed.type === 'error') {
     return { success: false, error: parsed.error };

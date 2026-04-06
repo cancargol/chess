@@ -53,8 +53,6 @@ export default function ChessViewer({ pgn, playerName, engineElo, result }) {
     }
   }, [moves]);
 
-
-
   // Responsive board size
   useEffect(() => {
     function handleResize() {
@@ -79,9 +77,11 @@ export default function ChessViewer({ pgn, playerName, engineElo, result }) {
     return positions[currentMoveIndex + 1] || positions[0];
   }, [currentMoveIndex, positions]);
 
-  // Debugging can be re-enabled if needed
+  // Debugging FEN in console for the user
   useEffect(() => {
-    // Correct sync is already verified with CustomChessboard
+    if (isClient && currentFen) {
+      console.log('Current FEN:', currentFen);
+    }
   }, [currentMoveIndex, currentFen, isClient]);
 
   const goToStart = useCallback(() => setCurrentMoveIndex(-1), []);
@@ -169,7 +169,45 @@ export default function ChessViewer({ pgn, playerName, engineElo, result }) {
           Jugada {currentMoveIndex + 1} de {moves.length} · ← → para navegar
         </div>
 
-
+        {/* FEN display box */}
+        <div style={{
+          marginTop: '1.5rem',
+          padding: '1rem',
+          background: 'rgba(0,0,0,0.2)',
+          borderRadius: '8px',
+          border: '1px solid var(--border-color)',
+        }}>
+          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.4rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            FEN actual
+          </div>
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <input 
+              readOnly 
+              value={currentFen || ''} 
+              style={{
+                flex: 1,
+                background: '#000',
+                border: '1px solid var(--border-color)',
+                borderRadius: '4px',
+                padding: '0.4rem 0.6rem',
+                color: 'var(--accent-blue)',
+                fontFamily: 'var(--font-mono)',
+                fontSize: '0.75rem',
+                outline: 'none',
+              }}
+              onFocus={(e) => e.target.select()}
+            />
+            <button 
+              className="viewer-btn" 
+              style={{ padding: '0.4rem 0.8rem', fontSize: '0.7rem', width: 'auto', height: 'auto' }}
+              onClick={() => {
+                navigator.clipboard.writeText(currentFen);
+              }}
+            >
+              Copiar
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* Move list panel */}

@@ -200,7 +200,29 @@
             "torre a {TargetColumn} {TargetRow}",
             "alfil a {TargetColumn} {TargetRow}",
             "dama a {TargetColumn} {TargetRow}",
-            "caballo a {TargetColumn} {TargetRow}"
+            "alfil a {TargetColumn} {TargetRow}",
+            "dama a {TargetColumn} {TargetRow}",
+            "caballo a {TargetColumn} {TargetRow}",
+            "{SourceColumn} por {TargetColumn} {TargetRow}",
+            "{SourceColumn} captura en {TargetColumn} {TargetRow}",
+            "{SourceColumn} captura {TargetColumn} {TargetRow}",
+            "peón de {SourceColumn} captura en {TargetColumn} {TargetRow}"
+          ]
+        },
+        {
+          "name": "WaitIntent",
+          "slots": [],
+          "samples": [
+            "espera",
+            "un momento",
+            "dame un momento",
+            "déjame pensar",
+            "estoy pensando",
+            "espera un segundo",
+            "un segundo",
+            "necesito tiempo",
+            "todavía no",
+            "aguarda"
           ]
         },
         {

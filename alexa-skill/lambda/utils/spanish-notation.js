@@ -63,9 +63,10 @@ function extractSquare(text) {
  * Parsea un comando de voz en español a un objeto de movimiento.
  *
  * @param {string} voiceInput - Texto del comando de voz
+ * @param {Chess} [chess] - Instancia de chess.js para desambiguar
  * @returns {{ type: string, san?: string, from?: string, to?: string, promotion?: string, error?: string }}
  */
-function parseSpanishMove(voiceInput) {
+function parseSpanishMove(voiceInput, chess = null) {
   const input = normalize(voiceInput);
 
   // === ENROQUES ===
@@ -113,7 +114,7 @@ function parseSpanishMove(voiceInput) {
   }
 
   // Detectar captura
-  const isCapture = input.includes('captura') || input.includes('come') || input.includes('toma');
+  const isCapture = input.includes('captura') || input.includes('come') || input.includes('toma') || input.includes(' por ');
 
   // Extraer casillas del texto (usando el input limpio)
   const squares = [];
@@ -154,17 +155,44 @@ function parseSpanishMove(voiceInput) {
   // Buscar columna de desambiguación (ej: "Torre a d1" → "Rad1")
   // Usamos el input limpio para evitar falsos positivos con el nombre de la pieza
   let disambiguation = '';
-  const disambigMatch = inputForSquares.match(/^([a-h])\s+[a-h][1-8]/);
-  if (disambigMatch && foundPiece) {
+  const disambigMatch = inputForSquares.match(/^([a-h])(\s+|$)/);
+  if (disambigMatch) {
     disambiguation = disambigMatch[1];
   }
 
-  // Construir SAN
+  // Si no encontramos pieza pero el input empieza por una columna (ej: "d por c3" o "d c3")
+  if (!foundPiece && !disambiguation) {
+    const pawnFileMatch = input.match(/^([a-h])(\s+|$)/);
+    if (pawnFileMatch) {
+      disambiguation = pawnFileMatch[1];
+      foundPiece = true;
+      pieceSAN = '';
+    }
+  }
+
+  // Construir SAN base
   let san = pieceSAN;
   san += disambiguation;
   if (isCapture) san += 'x';
   san += targetSquare;
   if (promotion) san += `=${promotion.toUpperCase()}`;
+
+  // DESAMBIGUACIÓN AUTOMÁTICA CON BOARD STATE
+  // Si es un peón capturando y no tenemos columna (ej: "peón captura en c3")
+  if (chess && isCapture && pieceSAN === '' && !disambiguation) {
+    const legalMoves = chess.moves({ verbose: true });
+    const matchingMoves = legalMoves.filter(m => 
+      m.to === targetSquare && 
+      m.piece === 'p' && 
+      m.flags.includes('c')
+    );
+
+    if (matchingMoves.length === 1) {
+      return { type: 'san', san: matchingMoves[0].san };
+    } else if (matchingMoves.length > 1) {
+      return { type: 'error', error: 'Movimiento ambiguo. Especifica la columna del peón.' };
+    }
+  }
 
   return { type: 'san', san };
 }

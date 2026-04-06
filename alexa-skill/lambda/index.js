@@ -26,6 +26,7 @@ const ResignHandler = require('./handlers/ResignHandler');
 const RankingHandler = require('./handlers/RankingHandler');
 const PhoneticHelpHandler = require('./handlers/PhoneticHelpHandler');
 const NewGameHandler = require('./handlers/NewGameHandler');
+const WaitHandler = require('./handlers/WaitHandler');
 const {
   HelpHandler,
   CancelStopHandler,
@@ -80,6 +81,7 @@ exports.handler = skillBuilder
     SetEloHandler,
     MoveHandler,
     NewGameHandler,
+    WaitHandler,
     StatusHandler,
     ResignHandler,
     RankingHandler,

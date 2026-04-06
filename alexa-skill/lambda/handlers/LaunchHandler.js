@@ -35,7 +35,7 @@ const LaunchHandler = {
 
             return handlerInput.responseBuilder
               .speak(`¡Bienvenido de nuevo, ${user.name}! Tienes una partida en curso contra un motor de ELO ${game.engine_elo}. Se han jugado ${game.moves_count} movimientos. Te toca jugar. Di tu movimiento o di "estado" para ver el tablero.`)
-              .reprompt('Di tu movimiento. Por ejemplo: "Peón e4" o "de e2 a e4".')
+              .reprompt('Di tu movimiento. Si necesitas más tiempo, dime: espera.')
               .getResponse();
           }
         }

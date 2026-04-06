@@ -182,7 +182,7 @@ const MoveHandler = {
 
     return handlerInput.responseBuilder
       .speak(speechOutput)
-      .reprompt('Di tu siguiente movimiento.')
+      .reprompt('Di tu siguiente movimiento. Si necesitas más tiempo, dime: espera.')
       .getResponse();
   },
 };
