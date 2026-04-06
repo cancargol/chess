@@ -70,10 +70,10 @@ function parseSpanishMove(voiceInput, chess = null) {
   const input = normalize(voiceInput);
 
   // === ENROQUES ===
-  if (input.includes('enroque corto') || input === 'enroque kingside') {
+  if (input.includes('enroque corto') || input.includes('kingside') || input.includes('o-o')) {
     return { type: 'san', san: 'O-O' };
   }
-  if (input.includes('enroque largo') || input === 'enroque queenside') {
+  if (input.includes('enroque largo') || input.includes('queenside') || input.includes('o-o-o')) {
     return { type: 'san', san: 'O-O-O' };
   }
 
@@ -114,7 +114,12 @@ function parseSpanishMove(voiceInput, chess = null) {
   }
 
   // Detectar captura
-  const isCapture = input.includes('captura') || input.includes('come') || input.includes('toma') || input.includes(' por ');
+  const isCapture = input.includes('captura') || 
+                   input.includes('come') || 
+                   input.includes('toma') || 
+                   input.includes(' por ') || 
+                   input.includes(' x ') ||
+                   /\b[a-h]x[a-h][1-8]\b/.test(input);
 
   // Extraer casillas del texto (usando el input limpio)
   const squares = [];
@@ -160,9 +165,10 @@ function parseSpanishMove(voiceInput, chess = null) {
     disambiguation = disambigMatch[1];
   }
 
-  // Si no encontramos pieza pero el input empieza por una columna (ej: "d por c3" o "d c3")
+  // Si no encontramos pieza pero el input empieza por una columna (ej: "d por c3", "d x c3", "d c3")
   if (!foundPiece && !disambiguation) {
-    const pawnFileMatch = input.match(/^([a-h])(\s+|$)/);
+    // Caso: empezamos por columna a-h seguida de espacio o 'x' o 'por'
+    const pawnFileMatch = input.match(/^([a-h])(?:\s+|x|por|$)/);
     if (pawnFileMatch) {
       disambiguation = pawnFileMatch[1];
       foundPiece = true;

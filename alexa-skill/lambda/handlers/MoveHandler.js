@@ -202,29 +202,42 @@ function buildVoiceCommand(slots) {
   const castling = slots.Castling?.value || '';
   const promotion = slots.Promotion?.value || '';
 
-  // Enroque
+  // 1. Enroque
   if (castling) {
     return castling;
   }
 
-  // Notación por coordenadas: "de {source} a {target}"
-  if (sourceColumn && sourceRow && targetColumn && targetRow) {
-    let cmd = `de ${sourceColumn}${sourceRow} a ${targetColumn}${targetRow}`;
-    if (promotion) cmd += ` corona ${promotion}`;
-    return cmd;
-  }
-
-  // Notación algebraica: "{Pieza} {target}"
+  // 2. Notación con destino claro
   if (targetColumn && targetRow) {
     let cmd = '';
+    
+    // Si hay pieza, la añadimos al principio
     if (piece) cmd += `${piece} `;
-    if (action) cmd += `${action} `;
+    
+    // Si hay origen (columna o fila), lo añadimos para desambiguar
+    if (sourceColumn || sourceRow) {
+      if (sourceColumn) cmd += `${sourceColumn}`;
+      if (sourceRow) cmd += `${sourceRow}`;
+      
+      // Si hay acción (captura)
+      if (action) {
+        cmd += ` ${action} `;
+      } else if (sourceColumn && sourceColumn !== targetColumn) {
+        // Atajo: si hay dos columnas distintas y no hay acción, es una captura de peón (ej: "b c3" -> "b x c3")
+        cmd += ' x ';
+      } else {
+        cmd += ' ';
+      }
+    } else if (action) {
+      cmd += `${action} `;
+    }
+
     cmd += `${targetColumn}${targetRow}`;
     if (promotion) cmd += ` corona ${promotion}`;
-    return cmd.trim() || null;
+    return cmd.trim();
   }
 
-  // Fallback: concatenar todo
+  // 3. Fallback: concatenar todo lo que haya
   const parts = [piece, action, sourceColumn, sourceRow, targetColumn, targetRow, promotion].filter(Boolean);
   return parts.length > 0 ? parts.join(' ') : null;
 }
