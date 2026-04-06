@@ -40,7 +40,6 @@
     },
     "manifestVersion": "1.0",
     "privacyAndCompliance": {
-      "allowsUpsell": false,
       "locales": {
         "es-ES": {
           "privacyPolicyUrl": "https://cancargol.com/privacy",

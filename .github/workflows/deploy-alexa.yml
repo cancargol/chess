@@ -5,8 +5,7 @@ on:
     branches: [main]
     paths:
       - 'alexa-skill/lambda/**'
-      - 'alexa-skill/interactionModels/**'
-      - 'alexa-skill/skill.json'
+      - 'alexa-skill/skill-package/**'
       - 'alexa-skill/ask-resources.json'
       - '.github/workflows/deploy-alexa.yml'
   workflow_dispatch:
