@@ -42,12 +42,27 @@ jobs:
 
       # 2. Despliegue del Modelo NLU e Interacción
       - name: Deploy Alexa Interaction Model
-        uses: alexa/ask-cli-action@v1
-        with:
-          ask-cli-version: latest
-          command: deploy --target skill-metadata
-          cwd: alexa-skill
+        working-directory: alexa-skill
         env:
-          ASK_ACCESS_TOKEN: ${{ secrets.ASK_ACCESS_TOKEN }}
           ASK_REFRESH_TOKEN: ${{ secrets.ASK_REFRESH_TOKEN }}
+          ASK_ACCESS_TOKEN: ${{ secrets.ASK_ACCESS_TOKEN }}
           ASK_VENDOR_ID: ${{ secrets.ASK_VENDOR_ID }}
+        run: |
+          npm install -g ask-cli
+          mkdir -p ~/.ask
+          # Crear configuración manual para ASK CLI
+          echo "{
+            \"profiles\": {
+              \"default\": {
+                \"token\": {
+                  \"access_token\": \"$ASK_ACCESS_TOKEN\",
+                  \"refresh_token\": \"$ASK_REFRESH_TOKEN\",
+                  \"token_type\": \"bearer\",
+                  \"expires_in\": 3600,
+                  \"expires_at\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"
+                },
+                \"vendor_id\": \"$ASK_VENDOR_ID\"
+              }
+            }
+          }" > ~/.ask/cli_config
+          ask deploy --target skill-metadata
