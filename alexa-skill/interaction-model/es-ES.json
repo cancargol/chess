@@ -1,7 +1,7 @@
 {
   "interactionModel": {
     "languageModel": {
-      "invocationName": "can cargol chess",
+      "invocationName": "ajedrez caracol",
       "intents": [
         {
           "name": "AMAZON.CancelIntent",

@@ -1,5 +1,5 @@
 /**
- * Servicio de base de datos DynamoDB para CanCargolChess.
+ * Servicio de base de datos DynamoDB para Ajedrez Caracol.
  * Gestiona usuarios y partidas.
  */
 

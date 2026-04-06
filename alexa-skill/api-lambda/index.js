@@ -1,5 +1,5 @@
 /**
- * API Lambda para el Dashboard de CanCargolChess.
+ * API Lambda para el Dashboard de Ajedrez Caracol.
  * Sirve datos de DynamoDB al dashboard estático en GitHub Pages.
  *
  * Endpoints:

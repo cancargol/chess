@@ -51,7 +51,7 @@ const LaunchHandler = {
 
     // No hay usuario en sesión → preguntar
     return handlerInput.responseBuilder
-      .speak('¡Bienvenido a CanCargolChess! Soy tu entrenador de ajedrez. ¿Quién eres? Dime tu nombre.')
+      .speak('¡Bienvenido a Ajedrez Caracol! Soy tu entrenador de ajedrez. ¿Quién eres? Dime tu nombre.')
       .reprompt('¿Cómo te llamas? Dime tu nombre para cargar tu perfil.')
       .getResponse();
   },

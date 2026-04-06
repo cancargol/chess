@@ -22,7 +22,7 @@ const RankingHandler = {
       const sortedUsers = users.sort((a, b) => (b.total_points || 0) - (a.total_points || 0));
       const top3 = sortedUsers.slice(0, 3);
 
-      let speech = 'Aquí tienes el Top 3 de CanCargolChess: ';
+      let speech = 'Aquí tienes el Top 3 de Ajedrez Caracol: ';
       
       top3.forEach((user, index) => {
         const position = ['primero', 'segundo', 'tercero'][index];

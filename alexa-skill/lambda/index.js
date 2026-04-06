@@ -1,5 +1,5 @@
 /**
- * CanCargolChess — Alexa Skill Lambda Handler
+ * Ajedrez Caracol — Alexa Skill Lambda Handler
  *
  * Entry point para la Skill de Alexa que permite jugar al ajedrez
  * contra el motor Stockfish, con distintos niveles de dificultad.
@@ -92,5 +92,5 @@ exports.handler = skillBuilder
   .addErrorHandlers(ErrorHandler)
   .addRequestInterceptors(LoadAttributesInterceptor)
   .addResponseInterceptors(LogResponseInterceptor)
-  .withCustomUserAgent('cancargolchess/v1.1')
+  .withCustomUserAgent('ajedrezcaracol/v1.1')
   .lambda();

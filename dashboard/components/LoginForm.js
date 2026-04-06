@@ -81,7 +81,7 @@ export default function LoginForm({ onSuccess }) {
     <div className="login-container">
       <div className="login-card animate-slide-up">
         <div className="login-icon">♚</div>
-        <h1 className="login-title">CanCargolChess</h1>
+        <h1 className="login-title">Ajedrez Caracol</h1>
         <p className="login-subtitle">
           Introduce tu PIN de 4 dígitos para acceder al dashboard.
         </p>
@@ -117,7 +117,7 @@ export default function LoginForm({ onSuccess }) {
         <div className="alexa-bubble-container">
           <div className="alexa-bubble">
             <span className="alexa-name">Alexa</span>
-            &quot;Abre CanCargolChess&quot;
+            &quot;Abre Ajedrez Caracol&quot;
           </div>
           <div className="alexa-bubble-icon">🌀</div>
           <p className="login-hint" style={{ marginTop: '1rem', maxWidth: '240px' }}>

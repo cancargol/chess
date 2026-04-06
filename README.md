@@ -1,4 +1,4 @@
-# ♚ CanCargolChess
+# ♚ Ajedrez Caracol
 
 Skill de Alexa para jugar al ajedrez contra Stockfish + Dashboard web con ranking y visor de partidas.
 

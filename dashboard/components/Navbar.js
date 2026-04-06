@@ -22,7 +22,7 @@ export default function Navbar() {
       <div className="navbar-inner">
         <Link href="/" className="navbar-brand">
           <span className="brand-icon">♚</span>
-          <span>CanCargolChess</span>
+          <span>Ajedrez Caracol</span>
         </Link>
 
         <div className="navbar-links">
