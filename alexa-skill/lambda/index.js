@@ -27,6 +27,8 @@ const RankingHandler = require('./handlers/RankingHandler');
 const PhoneticHelpHandler = require('./handlers/PhoneticHelpHandler');
 const NewGameHandler = require('./handlers/NewGameHandler');
 const WaitHandler = require('./handlers/WaitHandler');
+const UndoHandler = require('./handlers/UndoHandler');
+const EngineMoveHandler = require('./handlers/EngineMoveHandler');
 const {
   HelpHandler,
   CancelStopHandler,
@@ -80,6 +82,8 @@ exports.handler = skillBuilder
     ProvideEmailHandler,
     SetEloHandler,
     MoveHandler,
+    UndoHandler,
+    EngineMoveHandler,
     NewGameHandler,
     WaitHandler,
     StatusHandler,

@@ -165,9 +165,14 @@
             }
           ],
           "samples": [
-            "{Piece} {TargetColumn} {TargetRow}",
             "{Piece} a {TargetColumn} {TargetRow}",
             "mueve {Piece} a {TargetColumn} {TargetRow}",
+            "torre a {TargetColumn} {TargetRow}",
+            "alfil a {TargetColumn} {TargetRow}",
+            "caballo a {TargetColumn} {TargetRow}",
+            "dama a {TargetColumn} {TargetRow}",
+            "peón a {TargetColumn} {TargetRow}",
+            "rey a {TargetColumn} {TargetRow}",
             "{Piece} {Action} en {TargetColumn} {TargetRow}",
             "{Piece} {Action} {TargetColumn} {TargetRow}",
             "{TargetColumn} {TargetRow}",
@@ -178,6 +183,7 @@
             "{SourceColumn} {SourceRow} a {TargetColumn} {TargetRow}",
             "{Castling}",
             "haz {Castling}",
+            "haz el {Castling}",
             "{Piece} {TargetColumn} {TargetRow} {Promotion}",
             "{Piece} {TargetColumn} {TargetRow} corona {Promotion}",
             "de {SourceColumn} {SourceRow} a {TargetColumn} {TargetRow} corona {Promotion}",
@@ -196,13 +202,6 @@
             "peón captura en {TargetColumn} {TargetRow}",
             "peón {TargetColumn} {TargetRow}",
             "peón a {TargetColumn} {TargetRow}",
-            "rey a {TargetColumn} {TargetRow}",
-            "torre a {TargetColumn} {TargetRow}",
-            "alfil a {TargetColumn} {TargetRow}",
-            "dama a {TargetColumn} {TargetRow}",
-            "alfil a {TargetColumn} {TargetRow}",
-            "dama a {TargetColumn} {TargetRow}",
-            "caballo a {TargetColumn} {TargetRow}",
             "{SourceColumn} por {TargetColumn} {TargetRow}",
             "{SourceColumn} captura en {TargetColumn} {TargetRow}",
             "{SourceColumn} captura {TargetColumn} {TargetRow}",
@@ -271,7 +270,10 @@
           "samples": [
             "quién va primero",
             "dime el ranking",
-            "top tres",
+            "puntuaciones",
+            "los tres mejores",
+            "los mejores jugadores",
+            "ver el ranking",
             "clasificación"
           ]
         },
@@ -282,6 +284,18 @@
             "dime las abreviaturas",
             "ayuda con las letras",
             "alfabeto fonético"
+          ]
+        },
+        {
+          "name": "UndoIntent",
+          "samples": [
+            "rectifico",
+            "deshacer",
+            "vuelve atrás",
+            "me he equivocado",
+            "atrás",
+            "deshaz el movimiento",
+            "rectificar"
           ]
         }
       ],
@@ -572,6 +586,10 @@
                 "synonyms": [
                   "enroque de rey",
                   "enroque kingside",
+                  "enroque corto",
+                  "enroque",
+                  "corto",
+                  "haz el enroque",
                   "enroque por el lado del rey"
                 ]
               }
