@@ -8,6 +8,7 @@ on:
       - 'alexa-skill/interactionModels/**'
       - 'alexa-skill/skill.json'
       - 'alexa-skill/ask-resources.json'
+      - '.github/workflows/deploy-alexa.yml'
   workflow_dispatch:
 
 jobs:
@@ -65,4 +66,4 @@ jobs:
               }
             }
           }" > ~/.ask/cli_config
-          ask deploy --target skill-metadata
+          ask deploy --target skill-metadata --profile default
