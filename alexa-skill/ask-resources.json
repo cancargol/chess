@@ -1,0 +1,23 @@
+{
+  "askcliResourcesVersion": "2.0",
+  "profiles": {
+    "default": {
+      "skillMetadata": {
+        "src": "./"
+      },
+      "code": {
+        "default": {
+          "src": "./lambda"
+        }
+      },
+      "skillInfrastructure": {
+        "type": "@ask-cli/cfn-deployer",
+        "userConfig": {
+          "runtime": "nodejs20.x",
+          "handler": "index.handler",
+          "awsRegion": "eu-west-1"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,53 @@
+name: Deploy Alexa Skill
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'alexa-skill/lambda/**'
+      - 'alexa-skill/interactionModels/**'
+      - 'alexa-skill/skill.json'
+      - 'alexa-skill/ask-resources.json'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # 1. Despliegue de la Lambda (Código)
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
+
+      - name: Build and Deploy Lambda
+        working-directory: alexa-skill/lambda
+        run: |
+          npm install --omit=dev
+          rm -rf node_modules/@aws-sdk
+          zip -qr function.zip .
+          aws lambda update-function-code \
+            --function-name AjedrezMaestroSkill \
+            --zip-file fileb://function.zip
+
+      # 2. Despliegue del Modelo NLU e Interacción
+      - name: Deploy Alexa Interaction Model
+        uses: alexa/ask-cli-action@v1
+        with:
+          ask-cli-version: latest
+          command: deploy --target skill-metadata
+          cwd: alexa-skill
+        env:
+          ASK_ACCESS_TOKEN: ${{ secrets.ASK_ACCESS_TOKEN }}
+          ASK_REFRESH_TOKEN: ${{ secrets.ASK_REFRESH_TOKEN }}
+          ASK_VENDOR_ID: ${{ secrets.ASK_VENDOR_ID }}
