@@ -38,13 +38,43 @@ const VALID_ROWS = ['1', '2', '3', '4', '5', '6', '7', '8'];
 /**
  * Normaliza el texto de entrada: minúsculas, quitar acentos, limpiar espacios
  */
+/**
+ * Normaliza el texto de entrada: minúsculas, quitar acentos, limpiar espacios,
+ * y convertir números/letras escritos a sus valores algebraicos.
+ */
 function normalize(text) {
-  return text
+  let normalized = text
     .toLowerCase()
     .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[\u0300-\u036f]/g, '') // Quitar acentos
+    .replace(/[.,:;¡!¿?]/g, ' ')     // Quitar puntuación
     .replace(/\s+/g, ' ')
     .trim();
+
+  // Diccionario de números escritos a dígitos
+  const numberNames = {
+    uno: '1', dos: '2', tres: '3', cuatro: '4', 
+    cinco: '5', seis: '6', siete: '7', ocho: '8'
+  };
+
+  // Diccionario de nombres de letras (columnas) a letras
+  // NOTA: No incluimos "de" aquí porque es una preposición común ("de e2 a e4")
+  // El MoveHandler ya debería haber resuelto el ID "d" para el slot "de".
+  const columnNames = {
+    alfa: 'a', bravo: 'b', charlie: 'c', delta: 'd', echo: 'e', 
+    foxtrot: 'f', golf: 'g', hotel: 'h',
+    be: 'b', ce: 'c', efe: 'f', ge: 'g', hache: 'h'
+  };
+
+  // Aplicar reemplazos de palabras completas
+  const words = normalized.split(' ');
+  const processedWords = words.map(word => {
+    if (numberNames[word]) return numberNames[word];
+    if (columnNames[word]) return columnNames[word];
+    return word;
+  });
+
+  return processedWords.join(' ');
 }
 
 /**

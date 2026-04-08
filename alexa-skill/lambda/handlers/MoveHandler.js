@@ -273,19 +273,38 @@ const MoveHandler = {
 };
 
 /**
+ * Obtiene el valor de un slot priorizando resoluciones (IDs) para mayor precisión.
+ */
+function getResolvedSlotValue(slot) {
+  if (!slot || !slot.value) return '';
+  
+  // Si hay resoluciones con éxito, preferimos el ID del primer valor de la primera autoridad
+  const resolutions = slot.resolutions?.resolutionsPerAuthority;
+  if (resolutions) {
+    for (const res of resolutions) {
+      if (res.status.code === 'ER_SUCCESS_MATCH' && res.values && res.values.length > 0) {
+        return res.values[0].value.id;
+      }
+    }
+  }
+  
+  return slot.value;
+}
+
+/**
  * Construye el comando de voz a partir de los slots del intent.
  */
 function buildVoiceCommand(slots) {
   if (!slots) return null;
 
-  const piece = slots.Piece?.value || '';
-  const sourceColumn = slots.SourceColumn?.value || '';
-  const sourceRow = slots.SourceRow?.value || '';
-  const targetColumn = slots.TargetColumn?.value || '';
-  const targetRow = slots.TargetRow?.value || '';
-  const action = slots.Action?.value || '';
-  const castling = slots.Castling?.value || '';
-  const promotion = slots.Promotion?.value || '';
+  const piece = getResolvedSlotValue(slots.Piece);
+  const sourceColumn = getResolvedSlotValue(slots.SourceColumn);
+  const sourceRow = getResolvedSlotValue(slots.SourceRow);
+  const targetColumn = getResolvedSlotValue(slots.TargetColumn);
+  const targetRow = getResolvedSlotValue(slots.TargetRow);
+  const action = getResolvedSlotValue(slots.Action);
+  const castling = getResolvedSlotValue(slots.Castling);
+  const promotion = getResolvedSlotValue(slots.Promotion);
 
   // 1. Enroque
   if (castling) {
@@ -306,7 +325,9 @@ function buildVoiceCommand(slots) {
       
       // Si hay acción (captura)
       if (action) {
-        cmd += ` ${action} `;
+        // Mapear IDs internos a términos que use el parser si es necesario
+        const actionTerm = action === 'capture' ? 'por' : action;
+        cmd += ` ${actionTerm} `;
       } else if (sourceColumn && sourceColumn !== targetColumn) {
         // Atajo: si hay dos columnas distintas y no hay acción, es una captura de peón (ej: "b c3" -> "b x c3")
         cmd += ' x ';
@@ -314,7 +335,8 @@ function buildVoiceCommand(slots) {
         cmd += ' ';
       }
     } else if (action) {
-      cmd += `${action} `;
+      const actionTerm = action === 'capture' ? 'por' : action;
+      cmd += `${actionTerm} `;
     }
 
     cmd += `${targetColumn}${targetRow}`;
