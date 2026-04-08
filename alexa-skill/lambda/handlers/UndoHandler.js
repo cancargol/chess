@@ -1,5 +1,5 @@
 /**
- * UndoHandler - Permite al usuario cancelar un movimiento durante la ventana de 8 segundos.
+ * UndoHandler - Permite al usuario cancelar un movimiento durante la ventana de 4 segundos.
  */
 
 const UndoHandler = {

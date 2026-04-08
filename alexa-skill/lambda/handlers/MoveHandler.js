@@ -81,62 +81,194 @@ const MoveHandler = {
         .getResponse();
     }
 
-    // GUARDAR EN SESIÓN EL MOVIMIENTO PENDIENTE
-    sessionAttributes.pendingPlayerMove = {
-      voiceCommand: voiceCommand,
-      playerDescription: playerResult.description,
-      pgn: sessionAttributes.currentPgn,
-      fen: sessionAttributes.currentFen
-    };
-    handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
+    // Verificar soporte APL
+    const supportsAPL = handlerInput.requestEnvelope.context.System.device.supportedInterfaces['Alexa.Presentation.APL'];
 
-    const speechOutput = `${playerResult.description}. Tienes 8 segundos para rectificar o di Deshacer.`;
+    if (supportsAPL) {
+      // GUARDAR EN SESIÓN EL MOVIMIENTO PENDIENTE (para rectificación)
+      sessionAttributes.pendingPlayerMove = {
+        voiceCommand: voiceCommand,
+        playerDescription: playerResult.description,
+        pgn: sessionAttributes.currentPgn,
+        fen: sessionAttributes.currentFen
+      };
+      handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
 
-    // Directiva APL con Temporizador de 8 segundos
-    const aplDirective = {
-      type: 'Alexa.Presentation.APL.RenderDocument',
-      token: 'chess-timer',
-      document: {
-        type: 'APL',
-        version: '1.4',
-        mainTemplate: {
-          items: [
+      const speechOutput = `${playerResult.description}. Tienes 4 segundos para rectificar o di Deshacer.`;
+
+      // Directiva APL con Temporizador de 4 segundos en onMount
+      const aplDirective = {
+        type: 'Alexa.Presentation.APL.RenderDocument',
+        token: 'chess-timer',
+        document: {
+          type: 'APL',
+          version: '1.4',
+          onMount: [
             {
-              type: 'Container',
-              direction: 'column',
-              items: [
+              type: 'Sequential',
+              commands: [
                 {
-                  type: 'Text',
-                  text: `Esperando... (${playerResult.description})`,
-                  textAlign: 'center'
+                  type: 'Idle',
+                  delay: 4000
+                },
+                {
+                  type: 'SendEvent',
+                  arguments: ['engineMoveRequested']
                 }
               ]
             }
-          ]
+          ],
+          mainTemplate: {
+            items: [
+              {
+                type: 'Container',
+                direction: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '100%',
+                height: '100%',
+                items: [
+                  {
+                    type: 'Text',
+                    text: `Jugada: ${playerResult.description}`,
+                    fontSize: '40dp'
+                  },
+                  {
+                    type: 'Text',
+                    text: 'Esperando 4s para motor...',
+                    fontSize: '20dp',
+                    color: 'gray'
+                  }
+                ]
+              }
+            ]
+          }
         }
-      },
-      commands: [
-        {
-          type: 'Sequential',
-          commands: [
-            {
-              type: 'Idle',
-              delay: 8000
-            },
-            {
-              type: 'SendEvent',
-              arguments: ['engineMoveRequested']
-            }
-          ]
-        }
-      ]
-    };
+      };
 
-    return handlerInput.responseBuilder
-      .speak(speechOutput)
-      .addDirective(aplDirective)
-      .reprompt('Si quieres rectificar, di deshacer.')
-      .getResponse();
+      return handlerInput.responseBuilder
+        .speak(speechOutput)
+        .addDirective(aplDirective)
+        .reprompt('Si quieres rectificar, di deshacer.')
+        .getResponse();
+    } else {
+      // DISPOSITIVO SIN PANTALLA: Usar APL for Audio (APLA) para el temporizador
+      const supportsAPLA = handlerInput.requestEnvelope.context.System.device.supportedInterfaces['Alexa.Presentation.APLA'];
+
+      if (supportsAPLA) {
+        sessionAttributes.pendingPlayerMove = {
+          voiceCommand: voiceCommand,
+          playerDescription: playerResult.description,
+          pgn: sessionAttributes.currentPgn,
+          fen: sessionAttributes.currentFen
+        };
+        handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
+
+        const speechOutput = `${playerResult.description}. Tienes 4 segundos para rectificar o di Deshacer.`;
+
+        const aplaDirective = {
+          type: 'Alexa.Presentation.APLA.RenderDocument',
+          token: 'chess-timer-audio',
+          document: {
+            type: 'APLA',
+            version: '1.0',
+            mainTemplate: {
+              items: [
+                {
+                  type: 'Sequencer',
+                  items: [
+                    {
+                      type: 'Speech',
+                      content: `<speak>${speechOutput}</speak>`
+                    },
+                    {
+                      type: 'Silence',
+                      duration: 4000
+                    }
+                  ]
+                }
+              ]
+            },
+            onEnd: [
+              {
+                type: 'SendEvent',
+                arguments: ['engineMoveRequested']
+              }
+            ]
+          }
+        };
+
+        return handlerInput.responseBuilder
+          .addDirective(aplaDirective)
+          .reprompt('Si quieres rectificar, di deshacer.')
+          .getResponse();
+      } else {
+        // FALLBACK ABSOLUTO: Procesar inmediatamente (dispositivos muy antiguos)
+        const chess = new Chess();
+        if (sessionAttributes.currentPgn) {
+          chess.loadPgn(sessionAttributes.currentPgn);
+        } else if (sessionAttributes.currentFen && sessionAttributes.currentFen !== START_FEN) {
+          chess.load(sessionAttributes.currentFen);
+        }
+
+        chessService.makePlayerMove(chess, voiceCommand);
+        let speechOutput = `${playerResult.description}. `;
+
+        const stateAfterPlayer = chessService.checkGameState(chess);
+        if (stateAfterPlayer.isOver) {
+          await finishGame(sessionAttributes, chess, stateAfterPlayer.result, handlerInput);
+          speechOutput += stateAfterPlayer.description + await getGameEndSummary(sessionAttributes, stateAfterPlayer.result);
+          return handlerInput.responseBuilder.speak(speechOutput).getResponse();
+        }
+
+        const engineElo = sessionAttributes.engineElo || DEFAULT_ELO;
+        const params = mapEloToStockfish(engineElo);
+        let engineDescription = '';
+
+        try {
+          const engineMoveUCI = await getBestMove(chess.fen(), params.skillLevel, params.depth, 3000);
+          if (engineMoveUCI) {
+            const engineResult = chessService.makeEngineMove(chess, engineMoveUCI);
+            if (engineResult.success) {
+              engineDescription = engineResult.description;
+            }
+          }
+        } catch (error) {
+          console.error('Stockfish error in MoveHandler fallback:', error);
+        }
+
+        if (engineDescription) {
+          speechOutput += `Mi jugada: ${engineDescription}. `;
+        }
+
+        const stateAfterEngine = chessService.checkGameState(chess);
+        if (stateAfterEngine.isOver) {
+          await finishGame(sessionAttributes, chess, stateAfterEngine.result, handlerInput);
+          speechOutput += stateAfterEngine.description + await getGameEndSummary(sessionAttributes, stateAfterEngine.result);
+          return handlerInput.responseBuilder.speak(speechOutput).getResponse();
+        }
+
+        if (stateAfterEngine.description) {
+          speechOutput += stateAfterEngine.description;
+        }
+        speechOutput += 'Te toca.';
+
+        sessionAttributes.currentFen = chess.fen();
+        sessionAttributes.currentPgn = chess.pgn();
+        handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
+
+        await db.updateGame(sessionAttributes.activeGameId, {
+          fen: chess.fen(),
+          pgn: chess.pgn(),
+          moves_count: chess.history().length,
+        });
+
+        return handlerInput.responseBuilder
+          .speak(speechOutput)
+          .reprompt('Dime tu siguiente movimiento.')
+          .getResponse();
+      }
+    }
   },
 };
 

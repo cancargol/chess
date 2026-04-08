@@ -233,7 +233,8 @@ function moveToSpanish(san, moveObj) {
     const capturedName = SAN_TO_SPANISH[moveObj.captured?.toUpperCase()] || 'peón';
     description += ` captura ${capturedName} en`;
   } else {
-    description += ' a';
+    // Evitar "a a4" -> "a la casilla a4"
+    description += moveObj.to[0] === 'a' ? ' a la casilla' : ' a';
   }
 
   // Casilla destino - deletrear para claridad por voz

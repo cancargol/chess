@@ -16,9 +16,10 @@ async function initEngine() {
   }
 
   return new Promise((resolve, reject) => {
+    // Reducción de timeout a 5s para Alexa
     const timeout = setTimeout(() => {
-      reject(new Error('Stockfish initialization timeout (15s)'));
-    }, 15000);
+      reject(new Error('Stockfish initialization timeout (5s)'));
+    }, 5000);
 
     try {
       const Stockfish = require('stockfish');
@@ -76,71 +77,70 @@ function sendCommand(engine, command) {
 
 /**
  * Calcula la mejor jugada del motor para una posición FEN dada.
- *
- * @param {string} fen - Posición actual en formato FEN
- * @param {number} skillLevel - Nivel de habilidad (0-20)
- * @param {number} depth - Profundidad de búsqueda
- * @param {number} [moveTimeMs=3000] - Tiempo máximo en ms
- * @returns {Promise<string>} Mejor jugada en formato UCI (ej: "e2e4")
  */
 async function getBestMove(fen, skillLevel, depth, moveTimeMs = 3000) {
-  const engine = await initEngine();
+  try {
+    const engine = await initEngine();
 
-  return new Promise((resolve, reject) => {
-    const timeout = setTimeout(() => {
-      // Forzar parada y usar lo que tenga
-      sendCommand(engine, 'stop');
-    }, moveTimeMs + 2000);
+    return new Promise((resolve) => {
+      // Timeout de seguridad: resolver con null si el motor cuelga
+      const safetyTimeout = setTimeout(() => {
+         console.warn('Stockfish getBestMove timeout reached');
+         sendCommand(engine, 'stop');
+         removeListener();
+         resolve(null);
+      }, moveTimeMs + 1500);
 
-    let bestMove = null;
+      let bestMove = null;
 
-    const messageHandler = (line) => {
-      const msg = typeof line === 'string' ? line : line?.data;
-      if (typeof msg !== 'string') return;
+      const messageHandler = (line) => {
+        const msg = typeof line === 'string' ? line : line?.data;
+        if (typeof msg !== 'string') return;
 
-      // Capturar bestmove
-      const match = msg.match(/^bestmove\s+(\S+)/);
-      if (match) {
-        bestMove = match[1];
-        clearTimeout(timeout);
-        removeListener();
-        resolve(bestMove);
-      }
-    };
-
-    // Registrar listener temporal
-    let removeListener;
-    if (typeof engine.onmessage === 'function' || engine.onmessage !== undefined) {
-      const originalHandler = engine.onmessage;
-      engine.onmessage = (event) => {
-        const msg = typeof event === 'string' ? event : event?.data;
-        if (originalHandler) originalHandler(event);
-        messageHandler(msg);
-      };
-      removeListener = () => { engine.onmessage = originalHandler; };
-    } else if (typeof engine.addMessageListener === 'function') {
-      engine.addMessageListener(messageHandler);
-      removeListener = () => {
-        if (typeof engine.removeMessageListener === 'function') {
-          engine.removeMessageListener(messageHandler);
+        // Capturar bestmove
+        const match = msg.match(/^bestmove\s+(\S+)/);
+        if (match) {
+          bestMove = match[1];
+          clearTimeout(safetyTimeout);
+          removeListener();
+          resolve(bestMove);
         }
       };
-    } else if (typeof engine.on === 'function') {
-      engine.on('message', messageHandler);
-      removeListener = () => engine.removeListener('message', messageHandler);
-    } else {
-      removeListener = () => {};
-    }
 
-    // Configurar nivel de habilidad
-    sendCommand(engine, 'isready');
-    sendCommand(engine, `setoption name Skill Level value ${skillLevel}`);
-    sendCommand(engine, 'isready');
+      // Registrar listener temporal
+      let removeListener;
+      if (typeof engine.onmessage === 'function' || engine.onmessage !== undefined) {
+        const originalHandler = engine.onmessage;
+        engine.onmessage = (event) => {
+          const msg = typeof event === 'string' ? event : event?.data;
+          if (originalHandler) originalHandler(event);
+          messageHandler(msg);
+        };
+        removeListener = () => { engine.onmessage = originalHandler; };
+      } else if (typeof engine.addMessageListener === 'function') {
+        engine.addMessageListener(messageHandler);
+        removeListener = () => {
+          if (typeof engine.removeMessageListener === 'function') {
+            engine.removeMessageListener(messageHandler);
+          }
+        };
+      } else {
+        removeListener = () => {};
+      }
 
-    // Enviar posición y calcular
-    sendCommand(engine, `position fen ${fen}`);
-    sendCommand(engine, `go depth ${depth} movetime ${moveTimeMs}`);
-  });
+      // Configurar nivel de habilidad
+      sendCommand(engine, 'isready');
+      sendCommand(engine, `setoption name Skill Level value ${skillLevel}`);
+      sendCommand(engine, 'isready');
+
+      // Enviar posición y calcular
+      sendCommand(engine, `position fen ${fen}`);
+      sendCommand(engine, `go depth ${depth} movetime ${moveTimeMs}`);
+    });
+  } catch (error) {
+    console.error('getBestMove failed:', error);
+    return null;
+  }
 }
 
 /**

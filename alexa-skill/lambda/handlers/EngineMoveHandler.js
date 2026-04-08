@@ -24,24 +24,32 @@ const EngineMoveHandler = {
     const pending = sessionAttributes.pendingPlayerMove;
 
     if (!pending) {
-      // Si no hay movimiento pendiente, no hacemos nada (quizás ya se canceló)
-      return handlerInput.responseBuilder.getResponse();
+      console.warn('EngineMoveHandler called without pending move.');
+      return handlerInput.responseBuilder
+        .speak('Lo siento, no tengo una jugada pendiente que procesar.')
+        .getResponse();
     }
 
     // Cargar posición anterior al movimiento del jugador
     const chess = new Chess();
-    if (pending.pgn) {
-      chess.loadPgn(pending.pgn);
-    } else if (pending.fen) {
-      chess.load(pending.fen);
+    try {
+      if (pending.pgn) {
+        chess.loadPgn(pending.pgn);
+      } else if (pending.fen) {
+        chess.load(pending.fen);
+      }
+    } catch (e) {
+      console.error('Error loading position in EngineMoveHandler:', e);
+      delete sessionAttributes.pendingPlayerMove;
+      return handlerInput.responseBuilder.speak('Error al recuperar la posición de la partida.').getResponse();
     }
 
-    // APLICAR primero el movimiento del jugador (ahora que pasaron los 8s)
+    // APLICAR primero el movimiento del jugador (ahora que pasaron los 4s)
     const playerResult = chessService.makePlayerMove(chess, pending.voiceCommand);
     if (!playerResult.success) {
-      // Esto no debería pasar si MoveHandler ya lo validó, pero por seguridad:
+      console.error('Failed to re-apply player move:', playerResult.error);
       delete sessionAttributes.pendingPlayerMove;
-      return handlerInput.responseBuilder.speak('Hubo un error al procesar tu jugada. Por favor, repítela.').getResponse();
+      return handlerInput.responseBuilder.speak('Hubo un error al confirmar tu jugada. Por favor, repítela.').getResponse();
     }
 
     let speechOutput = '';
@@ -66,14 +74,17 @@ const EngineMoveHandler = {
         const engineResult = chessService.makeEngineMove(chess, engineMoveUCI);
         if (engineResult.success) {
           engineDescription = engineResult.description;
+        } else {
+          console.error('ChessService failed to make engine move:', engineResult.error);
         }
       }
     } catch (error) {
-      console.error('Stockfish error:', error);
+      console.error('Stockfish execution error in EngineMoveHandler:', error);
     }
 
     // Fallback si el motor falla
     if (!engineDescription) {
+      console.warn('Using random fallback move for motor.');
       const legalMoves = chess.moves();
       if (legalMoves.length > 0) {
         const randomMove = legalMoves[Math.floor(Math.random() * legalMoves.length)];
@@ -86,6 +97,8 @@ const EngineMoveHandler = {
 
     if (engineDescription) {
       speechOutput = `Mi jugada: ${engineDescription}. `;
+    } else {
+      speechOutput = 'En este momento no puedo realizar mi jugada. Te toca de nuevo. ';
     }
 
     // Verificar estado después del movimiento del motor
@@ -109,11 +122,15 @@ const EngineMoveHandler = {
     handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
 
     // Persistir en DB
-    await db.updateGame(sessionAttributes.activeGameId, {
-      fen: chess.fen(),
-      pgn: chess.pgn(),
-      moves_count: chess.history().length,
-    });
+    try {
+      await db.updateGame(sessionAttributes.activeGameId, {
+        fen: chess.fen(),
+        pgn: chess.pgn(),
+        moves_count: chess.history().length,
+      });
+    } catch (dbError) {
+      console.error('Failed to update DB in EngineMoveHandler:', dbError);
+    }
 
     return handlerInput.responseBuilder
       .speak(speechOutput)
